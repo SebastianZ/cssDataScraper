@@ -82,6 +82,10 @@
         if (isset($cssData->properties[$matches[2]])) {
           $cssData->properties[$matches[2]]->percentages = ($matches[1] === 'percentages' ? $matches[3] : 'no');
         }
+      } else if (preg_match('/^\{\{cssorderofappearancedef\("(.+?)"\)\}\}$/', trim($line), $matches)) {
+        if (isset($cssData->properties[$matches[1]])) {
+          $cssData->properties[$matches[1]]->order = 'appearance';
+        }
       } else if (preg_match('/^\{\{css(.+?)startdef\("([^\/]+?)"\)\}\}(.*?)\{\{css\1enddef\}\}$/', trim($line), $matches)) {
         if (isset($cssData->properties[$matches[2]])) {
           $cssData->properties[$matches[2]]->{$matches[1]} = $matches[3];
