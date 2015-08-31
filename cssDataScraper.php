@@ -84,7 +84,7 @@
         }
       } else if (preg_match('/^\{\{css(.+?)startdef\("([^\/]+?)"\)\}\}(.*?)\{\{css\1enddef\}\}$/', trim($line), $matches)) {
         if (isset($cssData->properties[$matches[2]])) {
-          $cssData->properties[$matches[2]]->$matches[1] = $matches[3];
+          $cssData->properties[$matches[2]]->{$matches[1]} = $matches[3];
         }
       } else if (preg_match('/^\{\{csssyntaxdef\("([^\/]+?)",\s*"(.+?)",\s*"non-terminal"\)\}\}$/', trim($line), $matches)) {
         if (!isset($cssData->syntaxes[$matches[1]])) {
@@ -92,7 +92,7 @@
         }
       } else if (preg_match('/^\{\{css(.+?)def\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', trim($line), $matches)) {
         if (isset($cssData->properties[$matches[2]])) {
-          $cssData->properties[$matches[2]]->$matches[1] = $matches[3];
+          $cssData->properties[$matches[2]]->{$matches[1]} = $matches[3];
         }
       } else if (preg_match('/^\{\{cssinitialshorthand\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', trim($line), $matches)) {
         if (isset($cssData->properties[$matches[1]])) {
