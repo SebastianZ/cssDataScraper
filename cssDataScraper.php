@@ -14,8 +14,8 @@
     public $media;
     public $shorthand = false;
     public $inherited = false;
-    public $animatable = "no";
-    public $percentages = "no";
+    public $animatable = 'no';
+    public $percentages = 'no';
     public $groups = [];
   }
 
@@ -81,6 +81,10 @@
       } else if (preg_match('/^\{\{css((?:no)percentage)def\("([^\/]+?)"(?:,\s*"(.+)")?\)\}\}$/', trim($line), $matches)) {
         if (isset($cssData->properties[$matches[2]])) {
           $cssData->properties[$matches[2]]->percentages = ($matches[1] === 'percentages' ? $matches[3] : 'no');
+        }
+      } else if (preg_match('/^\{\{csspercentageshorthand\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', trim($line), $matches)) {
+        if (isset($cssData->properties[$matches[1]])) {
+          $cssData->properties[$matches[1]]->percentages = preg_split('/\s+/', $matches[2]);
         }
       } else if (preg_match('/^\{\{cssorderofappearancedef\("(.+?)"\)\}\}$/', trim($line), $matches)) {
         if (isset($cssData->properties[$matches[1]])) {
