@@ -68,7 +68,7 @@
       } else if (preg_match('/^{\{cssxref\("([^\/]+?)"\)\}\}$/', trim($line), $matches)) {
         if (!isset($cssData->properties[$matches[1]])) {
           $cssData->properties[$matches[1]] = new cssProperty();
-          array_push($cssData->properties[$matches[1]]->groups, $group);
+          array_push($cssData->properties[$matches[1]]->groups, 'CSS ' . $group);
         }
       } else if (preg_match('/^\{\{css(doesinherit|notinherited)\("([^\/]+?)"\)\}\}$/', trim($line), $matches)) {
         if (isset($cssData->properties[$matches[2]])) {
@@ -112,8 +112,8 @@
   }
 
   // Add manual data
-  $cssData->atRules['@charset'] = new atRule(['Charsets']);
-  $cssData->atRules['@counter-style'] = new atRule(['Counter Styles'], ['CSSCounterStyleRule']);
+  $cssData->atRules['@charset'] = new atRule(['CSS Charsets']);
+  $cssData->atRules['@counter-style'] = new atRule(['CSS Counter Styles'], ['CSSCounterStyleRule']);
 
   $cssData->atRules['@counter-style']->descriptors = [];
 
@@ -197,8 +197,8 @@
   $descriptor->computed = 'as specified';
   $cssData->atRules['@counter-style']->descriptors['speak-as'] = $descriptor;
 
-  $cssData->atRules['@document'] = new atRule(['Conditional Rules'], ['CSSGroupingRule', 'CSSConditionRule']);
-  $cssData->atRules['@font-face'] = new atRule(['Fonts'], ['CSSFontFaceRule']);
+  $cssData->atRules['@document'] = new atRule(['CSS Conditional Rules'], ['CSSGroupingRule', 'CSSConditionRule']);
+  $cssData->atRules['@font-face'] = new atRule(['CSS Fonts'], ['CSSFontFaceRule']);
 
   $descriptor = new atRuleDescriptor();
   $descriptor->syntax = '&lt;family-name&gt;';
@@ -264,12 +264,12 @@
   $descriptor->computed = 'as specified';
   $cssData->atRules['@font-face']->descriptors['font-feature-settings'] = $descriptor;
 
-  $cssData->atRules['@font-feature-values'] = new atRule(['Fonts'], ['CSSFontFeatureValuesRule']);
-  $cssData->atRules['@import'] = new atRule(['Media Queries']);
-  $cssData->atRules['@keyframes'] = new atRule(['Animations'], ["CSSKeyframeRule", "CSSKeyframesRule"]);
-  $cssData->atRules['@media'] = new atRule(["Conditional Rules", "Media Queries"], ["CSSGroupingRule", "CSSConditionRule", "CSSMediaRule", "CSSCustomMediaRule"]);
-  $cssData->atRules['@namespace'] = new atRule(['Namespaces']);
-  $cssData->atRules['@page'] = new atRule(['Paged Media'], ['CSSPageRule']);
+  $cssData->atRules['@font-feature-values'] = new atRule(['CSS Fonts'], ['CSSFontFeatureValuesRule']);
+  $cssData->atRules['@import'] = new atRule(['CSS Media Queries']);
+  $cssData->atRules['@keyframes'] = new atRule(['CSS Animations'], ["CSSKeyframeRule", "CSSKeyframesRule"]);
+  $cssData->atRules['@media'] = new atRule(["CSS Conditional Rules", "CSS Media Queries"], ["CSSGroupingRule", "CSSConditionRule", "CSSMediaRule", "CSSCustomMediaRule"]);
+  $cssData->atRules['@namespace'] = new atRule(['CSS Namespaces']);
+  $cssData->atRules['@page'] = new atRule(['CSS Paged Media'], ['CSSPageRule']);
 
   $descriptor = new atRuleDescriptor();
   $descriptor->syntax = 'auto | &lt;length&gt;';
@@ -279,8 +279,8 @@
   $descriptor->computed = 'as specified';
   $cssData->atRules['@page']->descriptors['bleed'] = $descriptor;
 
-  $cssData->atRules['@supports'] = new atRule(['Conditional Rules'], ["CSSGroupingRule", "CSSConditionRule", "CSSSupportsRule"]);
-  $cssData->atRules['@viewport'] = new atRule(['Viewport'], ['CSSViewportRule']);
+  $cssData->atRules['@supports'] = new atRule(['CSS Conditional Rules'], ["CSSGroupingRule", "CSSConditionRule", "CSSSupportsRule"]);
+  $cssData->atRules['@viewport'] = new atRule(['CSS Viewport'], ['CSSViewportRule']);
 
   $cssData->atRules['@viewport']->descriptors = [];
 
