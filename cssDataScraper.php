@@ -35,7 +35,7 @@
 
   $cssData = new cssData();
 
-  $cssDataURLs = ['CSS_values_syntax', 'CSS_animated_properties', 'CSS_values_serialization', 'CSS_percentage_values'];
+  $cssDataURLs = ['CSS_values_syntax', 'CSS_animated_properties', 'CSS_values_serialization', 'CSS_percentage_values', 'CSS_special_properties'];
 
   foreach ($cssDataURLs as $cssDataURL) {
     $fileName = $cssDataURL . '.html';
@@ -101,6 +101,17 @@
       } else if (preg_match('/^\{\{css(.+?)def\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', trim($line), $matches)) {
         if (isset($cssData->properties[$matches[2]])) {
           $cssData->properties[$matches[2]]->{$matches[1]} = $matches[3];
+        }
+      } else if (preg_match('/^\{\{css((?:no)?stacking)\("(.+?)"\)\}\}$/', trim($line), $matches)) {
+        if (isset($cssData->properties[$matches[2]]) && $matches[1] === 'stacking') {
+          $cssData->properties[$matches[2]]->stacking = true;
+        }
+      } else if (preg_match('/^\{\{css(not)?on(.+?)\("(.+?)"\)\}\}$/', trim($line), $matches)) {
+        if (isset($cssData->properties[$matches[3]]) && $matches[1] === '') {
+        	if (!isset($cssData->properties[$matches[3]]->alsoAppliesTo)) {
+        		$cssData->properties[$matches[3]]->alsoAppliesTo = [];
+        	}
+        	array_push($cssData->properties[$matches[3]]->alsoAppliesTo, $matches[2]);
         }
       } else if (preg_match('/^\{\{cssinitialshorthand\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', trim($line), $matches)) {
         if (isset($cssData->properties[$matches[1]])) {
