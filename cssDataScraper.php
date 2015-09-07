@@ -304,6 +304,14 @@
   $cssData->atRules['@page'] = new atRule(['CSS Paged Media'], ['CSSPageRule']);
 
   $descriptor = new atRuleDescriptor();
+  $descriptor->syntax = 'none | [ crop || cross ]';
+  $descriptor->initial = 'none';
+  $descriptor->percentages = 'no';
+  $descriptor->media = 'all';
+  $descriptor->computed = 'as specified';
+  $cssData->atRules['@page']->descriptors['marks'] = $descriptor;
+
+  $descriptor = new atRuleDescriptor();
   $descriptor->syntax = 'auto | &lt;length&gt;';
   $descriptor->initial = 'auto';
   $descriptor->percentages = 'no';
