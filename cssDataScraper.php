@@ -94,7 +94,7 @@
         if (isset($cssData->properties[$matches[2]])) {
           $cssData->properties[$matches[2]]->{$matches[1]} = $matches[3];
         }
-      } else if (preg_match('/^\{\{csssyntaxdef\("([^\/]+?)",\s*"(.+?)",\s*"non-terminal"\)\}\}$/', trim($line), $matches)) {
+      } else if (preg_match('/^\{\{csssyntaxdef\("([^\/]+?)",\s*"(.+?)",\s*"non-terminal(?:-cont)?"\)\}\}$/', trim($line), $matches)) {
         if (!isset($cssData->syntaxes[$matches[1]])) {
           $cssData->syntaxes[$matches[1]] = $matches[2];
         }
