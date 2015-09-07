@@ -108,6 +108,10 @@
         if (isset($cssData->properties[$matches[2]])) {
           $cssData->properties[$matches[2]]->{$matches[1]} = $matches[3];
         }
+      } else if (preg_match('/^\{\{csscomputedcolordef\("([^\/]+?)"\)\}\}$/', trim($line), $matches)) {
+        if (isset($cssData->properties[$matches[1]])) {
+          $cssData->properties[$matches[1]]->computed = 'color';
+        }
       } else if (preg_match('/^\{\{css((?:no)?stacking)\("(.+?)"\)\}\}$/', trim($line), $matches)) {
         if (isset($cssData->properties[$matches[2]]) && $matches[1] === 'stacking') {
           $cssData->properties[$matches[2]]->stacking = true;
