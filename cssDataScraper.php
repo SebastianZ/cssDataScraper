@@ -80,11 +80,14 @@
         if (isset($cssData->properties[$matches[2]])) {
           $cssData->properties[$matches[2]]->inherited = ($matches[1] === 'doesinherit');
         }
-      } else if (preg_match('/^\{\{css((?:not)?animatable)def\("([^\/]+?)"(?:,\s*"(.+)")?\)\}\}$/', trim($line), $matches)) {
+      } else if (preg_match('/^\{\{css((?:not)?animatable)def\("([^\/]+?)"(?:,\s*"(.+?)")?(?:,\s*"(.+?)")?\)\}\}$/', trim($line), $matches)) {
         if (isset($cssData->properties[$matches[2]])) {
           $animatable = 'no';
           if ($matches[1] === 'animatable') {
             $animatable = isset($matches[3]) ? $matches[3] : 'yes';
+          }
+          if (isset($matches[4])) {
+            $animatable .= $matches[4];
           }
           $cssData->properties[$matches[2]]->animatable = $animatable;
         }
