@@ -92,9 +92,9 @@
         if (isset($cssData->properties[$matches[1]])) {
           $cssData->properties[$matches[1]]->animatable = preg_split('/\s+/', $matches[2]);
         }
-      } else if (preg_match('/^\{\{css((?:no)percentage)def\("([^\/]+?)"(?:,\s*"(.+)")?\)\}\}$/', trim($line), $matches)) {
+      } else if (preg_match('/^\{\{css((?:no)?percentage)def\("([^\/]+?)"(?:,\s*"(.+)")?\)\}\}$/', trim($line), $matches)) {
         if (isset($cssData->properties[$matches[2]])) {
-          $cssData->properties[$matches[2]]->percentages = ($matches[1] === 'percentages' ? $matches[3] : 'no');
+          $cssData->properties[$matches[2]]->percentages = ($matches[1] === 'percentage' ? $matches[3] : 'no');
         }
       } else if (preg_match('/^\{\{csspercentageshorthand\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', trim($line), $matches)) {
         if (isset($cssData->properties[$matches[1]])) {
