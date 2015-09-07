@@ -7,6 +7,7 @@
     public $properties = [];
     public $syntaxes = [];
     public $atRules = [];
+    public $selectors = [];
   }
 
   class cssProperty {
@@ -26,6 +27,11 @@
       }
       $this->groups = $groups;
     }
+  }
+
+  class selector {
+    public $syntax;
+    public $groups = [];
   }
 
   class atRuleDescriptor {
@@ -378,6 +384,262 @@
   $descriptor->media = 'visual, continuous';
   $descriptor->computed = 'as specified';
   $cssData->atRules['@viewport']->descriptors['orientation'] = $descriptor;
+
+  // Selectors
+  $selector = new selector();
+  $selector->syntax = 'element';
+  $selector->groups = ['Basic Selectors'];
+  $cssData->selectors['Type selectors'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = '.class';
+  $selector->groups = ['Basic Selectors'];
+  $cssData->selectors['Class selectors'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = '#id';
+  $selector->groups = ['Basic Selectors'];
+  $cssData->selectors['ID selectors'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = '*';
+  $selector->groups = ['Basic Selectors'];
+  $cssData->selectors['Universal selectors'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = '[attr=value]';
+  $selector->groups = ['Basic Selectors'];
+  $cssData->selectors['Attribute selectors'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = 'A + B';
+  $selector->groups = ['Combinators'];
+  $cssData->selectors['Adjacent sibling selectors'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = 'A ~ B';
+  $selector->groups = ['Combinators'];
+  $cssData->selectors['General sibling selectors'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = 'A &gt; B';
+  $selector->groups = ['Combinators'];
+  $cssData->selectors['Child selectors'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = 'A B';
+  $selector->groups = ['Combinators'];
+  $cssData->selectors['Descendant selectors'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = ':active';
+  $selector->groups = ['Pseudo-classes'];
+  $cssData->selectors[':active'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = ':checked';
+  $selector->groups = ['Pseudo-classes'];
+  $cssData->selectors[':checked'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = ':dir()';
+  $selector->groups = ['Pseudo-classes'];
+  $cssData->selectors[':dir'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = ':disabled';
+  $selector->groups = ['Pseudo-classes'];
+  $cssData->selectors[':disabled'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = ':empty';
+  $selector->groups = ['Pseudo-classes'];
+  $cssData->selectors[':empty'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = ':enabled';
+  $selector->groups = ['Pseudo-classes'];
+  $cssData->selectors[':enabled'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = ':first';
+  $selector->groups = ['Pseudo-classes'];
+  $cssData->selectors[':first'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = ':first-child';
+  $selector->groups = ['Pseudo-classes'];
+  $cssData->selectors[':first-child'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = ':first-of-type';
+  $selector->groups = ['Pseudo-classes'];
+  $cssData->selectors[':first-of-type'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = ':fullscreen';
+  $selector->groups = ['Pseudo-classes'];
+  $cssData->selectors[':fullscreen'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = ':focus';
+  $selector->groups = ['Pseudo-classes'];
+  $cssData->selectors[':focus'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = ':hover';
+  $selector->groups = ['Pseudo-classes'];
+  $cssData->selectors[':hover'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = ':indeterminate';
+  $selector->groups = ['Pseudo-classes'];
+  $cssData->selectors[':indeterminate'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = ':in-range';
+  $selector->groups = ['Pseudo-classes'];
+  $cssData->selectors[':in-range'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = ':invalid';
+  $selector->groups = ['Pseudo-classes'];
+  $cssData->selectors[':invalid'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = ':lang()';
+  $selector->groups = ['Pseudo-classes'];
+  $cssData->selectors[':lang'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = ':last-child';
+  $selector->groups = ['Pseudo-classes'];
+  $cssData->selectors[':last-child'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = ':last-of-type';
+  $selector->groups = ['Pseudo-classes'];
+  $cssData->selectors[':last-of-type'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = ':left';
+  $selector->groups = ['Pseudo-classes', 'CSS Pages'];
+  $cssData->selectors[':left'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = ':link';
+  $selector->groups = ['Pseudo-classes'];
+  $cssData->selectors[':link'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = ':not()';
+  $selector->groups = ['Pseudo-classes'];
+  $cssData->selectors[':not'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = ':nth-child()';
+  $selector->groups = ['Pseudo-classes'];
+  $cssData->selectors[':nth-child'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = ':nth-last-child()';
+  $selector->groups = ['Pseudo-classes'];
+  $cssData->selectors[':nth-last-child'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = ':nth-last-of-type()';
+  $selector->groups = ['Pseudo-classes'];
+  $cssData->selectors[':nth-last-of-type'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = ':nth-of-type()';
+  $selector->groups = ['Pseudo-classes'];
+  $cssData->selectors[':nth-of-type'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = ':only-child';
+  $selector->groups = ['Pseudo-classes'];
+  $cssData->selectors[':only-child'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = ':only-of-type';
+  $selector->groups = ['Pseudo-classes'];
+  $cssData->selectors[':only-of-type'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = ':optional';
+  $selector->groups = ['Pseudo-classes'];
+  $cssData->selectors[':optional'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = ':out-of-range';
+  $selector->groups = ['Pseudo-classes'];
+  $cssData->selectors[':out-of-range'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = ':active';
+  $selector->groups = ['Pseudo-classes'];
+  $cssData->selectors[':read-only'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = ':read-write';
+  $selector->groups = ['Pseudo-classes'];
+  $cssData->selectors[':read-write'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = ':required';
+  $selector->groups = ['Pseudo-classes'];
+  $cssData->selectors[':required'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = ':right';
+  $selector->groups = ['Pseudo-classes', 'CSS Pages'];
+  $cssData->selectors[':right'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = ':scope';
+  $selector->groups = ['Pseudo-classes'];
+  $cssData->selectors[':scope'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = ':target';
+  $selector->groups = ['Pseudo-classes'];
+  $cssData->selectors[':target'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = ':valid';
+  $selector->groups = ['Pseudo-classes'];
+  $cssData->selectors[':valid'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = '::after';
+  $selector->groups = ['Pseudo-elements'];
+  $cssData->selectors['::after'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = '::before';
+  $selector->groups = ['Pseudo-elements'];
+  $cssData->selectors['::before'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = '::first-letter';
+  $selector->groups = ['Pseudo-elements'];
+  $cssData->selectors['::first-letter'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = '::first-line';
+  $selector->groups = ['Pseudo-elements'];
+  $cssData->selectors['::first-line'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = '::selection';
+  $selector->groups = ['Pseudo-elements'];
+  $cssData->selectors['::selection'] = $selector;
+
+  $selector = new selector();
+  $selector->syntax = '::backdrop';
+  $selector->groups = ['Pseudo-elements'];
+  $cssData->selectors['::backdrop'] = $selector;
 
   dump($cssData);
 
