@@ -80,9 +80,13 @@
         if (isset($cssData->properties[$matches[2]])) {
           $cssData->properties[$matches[2]]->inherited = ($matches[1] === 'doesinherit');
         }
-      } else if (preg_match('/^\{\{css((?:not)animatable)def\("([^\/]+?)"(?:,\s*"(.+)")?\)\}\}$/', trim($line), $matches)) {
+      } else if (preg_match('/^\{\{css((?:not)?animatable)def\("([^\/]+?)"(?:,\s*"(.+)")?\)\}\}$/', trim($line), $matches)) {
         if (isset($cssData->properties[$matches[2]])) {
-          $cssData->properties[$matches[2]]->animatable = ($matches[1] === 'animatable' ? $matches[3] : 'no');
+          $animatable = 'no';
+          if ($matches[1] === 'animatable') {
+            $animatable = isset($matches[3]) ? $matches[3] : 'yes';
+          }
+          $cssData->properties[$matches[2]]->animatable = $animatable;
         }
       } else if (preg_match('/^\{\{css((?:no)percentage)def\("([^\/]+?)"(?:,\s*"(.+)")?\)\}\}$/', trim($line), $matches)) {
         if (isset($cssData->properties[$matches[2]])) {
