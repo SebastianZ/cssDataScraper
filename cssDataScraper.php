@@ -460,6 +460,11 @@
   $cssData->selectors[':active'] = $selector;
 
   $selector = new selector();
+  $selector->syntax = ':any';
+  $selector->groups = ['Pseudo-classes'];
+  $cssData->selectors[':any'] = $selector;
+
+  $selector = new selector();
   $selector->syntax = ':checked';
   $selector->groups = ['Pseudo-classes'];
   $cssData->selectors[':checked'] = $selector;
@@ -619,6 +624,11 @@
   $selector->groups = ['Pseudo-classes', 'CSS Pages'];
   $cssData->selectors[':right'] = $selector;
 
+  $selector = new selector();
+  $selector->syntax = ':root';
+  $selector->groups = ['Pseudo-classes', 'CSS Pages'];
+  $cssData->selectors[':root'] = $selector;
+  
   $selector = new selector();
   $selector->syntax = ':scope';
   $selector->groups = ['Pseudo-classes'];
