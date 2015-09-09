@@ -1,5 +1,7 @@
 <?php
-  require_once 'PHPDump/src/debug.php';
+  if (file_exists('PHPDump/src/debug.php')) {
+    require_once 'PHPDump/src/debug.php';
+  }
 
   $jsonFileName = 'cssData.json';
 
@@ -674,7 +676,11 @@
   $selector->groups = ['Pseudo-elements'];
   $cssData->selectors['::backdrop'] = $selector;
 
-  dump($cssData);
+  if (function_exists('dump')) {
+    dump($cssData);
+  } else {
+  	var_dump($cssData);
+  }
 
   file_put_contents($jsonFileName, json_encode($cssData, JSON_PRETTY_PRINT));
 ?>
