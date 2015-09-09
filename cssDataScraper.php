@@ -41,11 +41,118 @@
     public $media;
   }
 
+
+  function parseValuesSyntax($cssData, $line) {
+    if (preg_match('/^\{\{css(doesinherit|notinherited)\("([^\/]+?)"\)\}\}$/', trim($line), $matches)) {
+      if (isset($cssData->properties[$matches[2]])) {
+        $cssData->properties[$matches[2]]->inherited = ($matches[1] === 'doesinherit');
+      }
+    } else if (preg_match('/^\{\{csssyntaxdef\("([^\/]+?)",\s*"(.+?)",\s*"non-terminal(?:-cont)?"\)\}\}$/', trim($line), $matches)) {
+      if (!isset($cssData->syntaxes[$matches[1]])) {
+        $cssData->syntaxes[$matches[1]] = $matches[2];
+      }
+    } else if (preg_match('/^\{\{cssinitialshorthand\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', trim($line), $matches)) {
+      if (isset($cssData->properties[$matches[1]])) {
+        $cssData->properties[$matches[1]]->shorthand = true;
+        $cssData->properties[$matches[1]]->longhands = preg_split('/\s+/', $matches[2]);
+      }
+    } else {
+    	return false;
+    }
+
+    return true;
+  }
+
+
+  function parseAnimatedProperties($cssData, $line) {
+    if (preg_match('/^\{\{css((?:not)?animatable)def\("([^\/]+?)"(?:,\s*"(.+?)")?(?:,\s*"(.+?)")?\)\}\}$/', trim($line), $matches)) {
+      if (isset($cssData->properties[$matches[2]])) {
+        $animatable = 'no';
+        if ($matches[1] === 'animatable') {
+          $animatable = isset($matches[3]) ? $matches[3] : 'yes';
+        }
+        if (isset($matches[4])) {
+          $animatable .= $matches[4];
+        }
+        $cssData->properties[$matches[2]]->animatable = $animatable;
+      }
+    } else if (preg_match('/^\{\{cssanimatableshorthand\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', trim($line), $matches)) {
+      if (isset($cssData->properties[$matches[1]])) {
+        $cssData->properties[$matches[1]]->animatable = preg_split('/\s+/', $matches[2]);
+      }
+    } else {
+    	return false;
+    }
+
+    return true;
+  }
+
+
+  function parseValuesSerialization($cssData, $line) {
+    if (preg_match('/^\{\{csscomputedcolordef\("([^\/]+?)"\)\}\}$/', trim($line), $matches)) {
+      if (isset($cssData->properties[$matches[1]])) {
+        $cssData->properties[$matches[1]]->computed = 'color';
+      }
+    } else if (preg_match('/^\{\{cssorderofappearancedef\("(.+?)"\)\}\}$/', trim($line), $matches)) {
+      if (isset($cssData->properties[$matches[1]])) {
+        $cssData->properties[$matches[1]]->order = 'appearance';
+      }
+    } else {
+    	return false;
+    }
+
+    return true;
+  }
+
+
+  function parsePercentageValues($cssData, $line) {
+    if (preg_match('/^\{\{css((?:no)?percentage)def\("([^\/]+?)"(?:,\s*"(.+)")?\)\}\}$/', trim($line), $matches)) {
+      if (isset($cssData->properties[$matches[2]])) {
+        $cssData->properties[$matches[2]]->percentages = ($matches[1] === 'percentage' ? $matches[3] : 'no');
+      }
+    } else if (preg_match('/^\{\{csspercentageshorthand\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', trim($line), $matches)) {
+      if (isset($cssData->properties[$matches[1]])) {
+        $cssData->properties[$matches[1]]->percentages = preg_split('/\s+/', $matches[2]);
+      }
+    } else {
+    	return false;
+    }
+
+    return true;
+  }
+
+
+  function parseSpecialProperties($cssData, $line) {
+    if (preg_match('/^\{\{css((?:no)?stacking)\("(.+?)"\)\}\}$/', trim($line), $matches)) {
+      if (isset($cssData->properties[$matches[2]]) && $matches[1] === 'stacking') {
+        $cssData->properties[$matches[2]]->stacking = true;
+      }
+    } else if (preg_match('/^\{\{css(not)?on(.+?)\("(.+?)"\)\}\}$/', trim($line), $matches)) {
+      if (isset($cssData->properties[$matches[3]]) && $matches[1] === '') {
+        if (!isset($cssData->properties[$matches[3]]->alsoAppliesTo)) {
+          $cssData->properties[$matches[3]]->alsoAppliesTo = [];
+        }
+        array_push($cssData->properties[$matches[3]]->alsoAppliesTo, $matches[2]);
+      }
+    } else {
+    	return false;
+    }
+
+    return true;
+  }
+
+
   $cssData = new cssData();
 
-  $cssDataURLs = ['CSS_values_syntax', 'CSS_animated_properties', 'CSS_values_serialization', 'CSS_percentage_values', 'CSS_special_properties'];
+  $cssDataURLs = [
+      'CSS_values_syntax' => 'parseValuesSyntax',
+      'CSS_animated_properties' => 'parseAnimatedProperties',
+      'CSS_values_serialization' => 'parseValuesSerialization',
+      'CSS_percentage_values' => 'parsePercentageValues',
+      'CSS_special_properties' => 'parseSpecialProperties'
+  ];
 
-  foreach ($cssDataURLs as $cssDataURL) {
+  foreach ($cssDataURLs as $cssDataURL => $parsingFunction) {
     $fileName = $cssDataURL . '.html';
     if (isset($_GET['refresh']) || !file_exists($fileName)) {
       $fetchLocation = 'https://developer.mozilla.org/en-US/docs/Web/CSS/' . $cssDataURL . '?raw';
@@ -78,71 +185,18 @@
           $cssData->properties[$matches[1]] = new cssProperty();
           array_push($cssData->properties[$matches[1]]->groups, 'CSS ' . $group);
         }
-      } else if (preg_match('/^\{\{css(doesinherit|notinherited)\("([^\/]+?)"\)\}\}$/', trim($line), $matches)) {
-        if (isset($cssData->properties[$matches[2]])) {
-          $cssData->properties[$matches[2]]->inherited = ($matches[1] === 'doesinherit');
-        }
-      } else if (preg_match('/^\{\{css((?:not)?animatable)def\("([^\/]+?)"(?:,\s*"(.+?)")?(?:,\s*"(.+?)")?\)\}\}$/', trim($line), $matches)) {
-        if (isset($cssData->properties[$matches[2]])) {
-          $animatable = 'no';
-          if ($matches[1] === 'animatable') {
-            $animatable = isset($matches[3]) ? $matches[3] : 'yes';
-          }
-          if (isset($matches[4])) {
-            $animatable .= $matches[4];
-          }
-          $cssData->properties[$matches[2]]->animatable = $animatable;
-        }
-      } else if (preg_match('/^\{\{cssanimatableshorthand\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', trim($line), $matches)) {
-        if (isset($cssData->properties[$matches[1]])) {
-          $cssData->properties[$matches[1]]->animatable = preg_split('/\s+/', $matches[2]);
-        }
-      } else if (preg_match('/^\{\{css((?:no)?percentage)def\("([^\/]+?)"(?:,\s*"(.+)")?\)\}\}$/', trim($line), $matches)) {
-        if (isset($cssData->properties[$matches[2]])) {
-          $cssData->properties[$matches[2]]->percentages = ($matches[1] === 'percentage' ? $matches[3] : 'no');
-        }
-      } else if (preg_match('/^\{\{csspercentageshorthand\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', trim($line), $matches)) {
-        if (isset($cssData->properties[$matches[1]])) {
-          $cssData->properties[$matches[1]]->percentages = preg_split('/\s+/', $matches[2]);
-        }
-      } else if (preg_match('/^\{\{cssorderofappearancedef\("(.+?)"\)\}\}$/', trim($line), $matches)) {
-        if (isset($cssData->properties[$matches[1]])) {
-          $cssData->properties[$matches[1]]->order = 'appearance';
-        }
-      } else if (preg_match('/^\{\{css(.+?)startdef\("([^\/]+?)"\)\}\}(.*?)\{\{css\1enddef\}\}$/', trim($line), $matches)) {
-        if (isset($cssData->properties[$matches[2]])) {
-          $cssData->properties[$matches[2]]->{$matches[1]} = $matches[3];
-        }
-      } else if (preg_match('/^\{\{csssyntaxdef\("([^\/]+?)",\s*"(.+?)",\s*"non-terminal(?:-cont)?"\)\}\}$/', trim($line), $matches)) {
-        if (!isset($cssData->syntaxes[$matches[1]])) {
-          $cssData->syntaxes[$matches[1]] = $matches[2];
-        }
-      } else if (preg_match('/^\{\{css(.+?)def\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', trim($line), $matches)) {
-        if (isset($cssData->properties[$matches[2]])) {
-          $cssData->properties[$matches[2]]->{$matches[1]} = $matches[3];
-        }
-      } else if (preg_match('/^\{\{csscomputedcolordef\("([^\/]+?)"\)\}\}$/', trim($line), $matches)) {
-        if (isset($cssData->properties[$matches[1]])) {
-          $cssData->properties[$matches[1]]->computed = 'color';
-        }
-      } else if (preg_match('/^\{\{css((?:no)?stacking)\("(.+?)"\)\}\}$/', trim($line), $matches)) {
-        if (isset($cssData->properties[$matches[2]]) && $matches[1] === 'stacking') {
-          $cssData->properties[$matches[2]]->stacking = true;
-        }
-      } else if (preg_match('/^\{\{css(not)?on(.+?)\("(.+?)"\)\}\}$/', trim($line), $matches)) {
-        if (isset($cssData->properties[$matches[3]]) && $matches[1] === '') {
-        	if (!isset($cssData->properties[$matches[3]]->alsoAppliesTo)) {
-        		$cssData->properties[$matches[3]]->alsoAppliesTo = [];
-        	}
-        	array_push($cssData->properties[$matches[3]]->alsoAppliesTo, $matches[2]);
-        }
-      } else if (preg_match('/^\{\{cssinitialshorthand\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', trim($line), $matches)) {
-        if (isset($cssData->properties[$matches[1]])) {
-          $cssData->properties[$matches[1]]->shorthand = true;
-          $cssData->properties[$matches[1]]->longhands = preg_split('/\s+/', $matches[2]);
-        }
+      } else if (!$parsingFunction($cssData, trim($line))) {
+	       if (preg_match('/^\{\{css(.+?)startdef\("([^\/]+?)"\)\}\}(.*?)\{\{css\1enddef\}\}$/', trim($line), $matches)) {
+	        if (isset($cssData->properties[$matches[2]])) {
+	          $cssData->properties[$matches[2]]->{$matches[1]} = $matches[3];
+	        }
+	      } else if (preg_match('/^\{\{css(.+?)def\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', trim($line), $matches)) {
+	        if (isset($cssData->properties[$matches[2]])) {
+	          $cssData->properties[$matches[2]]->{$matches[1]} = $matches[3];
+	        }
+	      }
       }
-    } 
+    }
   }
 
   // Add manual data
@@ -679,7 +733,7 @@
   if (function_exists('dump')) {
     dump($cssData);
   } else {
-  	var_dump($cssData);
+    var_dump($cssData);
   }
 
   file_put_contents($jsonFileName, json_encode($cssData, JSON_PRETTY_PRINT));
