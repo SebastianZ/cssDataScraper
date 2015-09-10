@@ -43,15 +43,15 @@
 
 
   function parseValuesSyntax($cssData, $line) {
-    if (preg_match('/^\{\{css(doesinherit|notinherited)\("([^\/]+?)"\)\}\}$/', trim($line), $matches)) {
+    if (preg_match('/^\{\{css(doesinherit|notinherited)\("([^\/]+?)"\)\}\}$/', $line, $matches)) {
       if (isset($cssData->properties[$matches[2]])) {
         $cssData->properties[$matches[2]]->inherited = ($matches[1] === 'doesinherit');
       }
-    } else if (preg_match('/^\{\{csssyntaxdef\("([^\/]+?)",\s*"(.+?)",\s*"non-terminal(?:-cont)?"\)\}\}$/', trim($line), $matches)) {
+    } else if (preg_match('/^\{\{csssyntaxdef\("([^\/]+?)",\s*"(.+?)",\s*"non-terminal(?:-cont)?"\)\}\}$/', $line, $matches)) {
       if (!isset($cssData->syntaxes[$matches[1]])) {
         $cssData->syntaxes[$matches[1]] = $matches[2];
       }
-    } else if (preg_match('/^\{\{cssinitialshorthand\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', trim($line), $matches)) {
+    } else if (preg_match('/^\{\{cssinitialshorthand\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', $line, $matches)) {
       if (isset($cssData->properties[$matches[1]])) {
         $cssData->properties[$matches[1]]->shorthand = true;
         $cssData->properties[$matches[1]]->longhands = preg_split('/\s+/', $matches[2]);
@@ -65,7 +65,7 @@
 
 
   function parseAnimatedProperties($cssData, $line) {
-    if (preg_match('/^\{\{css((?:not)?animatable)def\("([^\/]+?)"(?:,\s*"(.+?)")?(?:,\s*"(.+?)")?\)\}\}$/', trim($line), $matches)) {
+    if (preg_match('/^\{\{css((?:not)?animatable)def\("([^\/]+?)"(?:,\s*"(.+?)")?(?:,\s*"(.+?)")?\)\}\}$/', $line, $matches)) {
       if (isset($cssData->properties[$matches[2]])) {
         $animatable = 'no';
         if ($matches[1] === 'animatable') {
@@ -76,7 +76,7 @@
         }
         $cssData->properties[$matches[2]]->animatable = $animatable;
       }
-    } else if (preg_match('/^\{\{cssanimatableshorthand\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', trim($line), $matches)) {
+    } else if (preg_match('/^\{\{cssanimatableshorthand\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', $line, $matches)) {
       if (isset($cssData->properties[$matches[1]])) {
         $cssData->properties[$matches[1]]->animatable = preg_split('/\s+/', $matches[2]);
       }
@@ -89,11 +89,11 @@
 
 
   function parseValuesSerialization($cssData, $line) {
-    if (preg_match('/^\{\{csscomputedcolordef\("([^\/]+?)"\)\}\}$/', trim($line), $matches)) {
+    if (preg_match('/^\{\{csscomputedcolordef\("([^\/]+?)"\)\}\}$/', $line, $matches)) {
       if (isset($cssData->properties[$matches[1]])) {
         $cssData->properties[$matches[1]]->computed = 'color';
       }
-    } else if (preg_match('/^\{\{cssorderofappearancedef\("(.+?)"\)\}\}$/', trim($line), $matches)) {
+    } else if (preg_match('/^\{\{cssorderofappearancedef\("(.+?)"\)\}\}$/', $line, $matches)) {
       if (isset($cssData->properties[$matches[1]])) {
         $cssData->properties[$matches[1]]->order = 'appearance';
       }
@@ -106,11 +106,11 @@
 
 
   function parsePercentageValues($cssData, $line) {
-    if (preg_match('/^\{\{css((?:no)?percentage)def\("([^\/]+?)"(?:,\s*"(.+)")?\)\}\}$/', trim($line), $matches)) {
+    if (preg_match('/^\{\{css((?:no)?percentage)def\("([^\/]+?)"(?:,\s*"(.+)")?\)\}\}$/', $line, $matches)) {
       if (isset($cssData->properties[$matches[2]])) {
         $cssData->properties[$matches[2]]->percentages = ($matches[1] === 'percentage' ? $matches[3] : 'no');
       }
-    } else if (preg_match('/^\{\{csspercentageshorthand\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', trim($line), $matches)) {
+    } else if (preg_match('/^\{\{csspercentageshorthand\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', $line, $matches)) {
       if (isset($cssData->properties[$matches[1]])) {
         $cssData->properties[$matches[1]]->percentages = preg_split('/\s+/', $matches[2]);
       }
@@ -123,11 +123,11 @@
 
 
   function parseSpecialProperties($cssData, $line) {
-    if (preg_match('/^\{\{css((?:no)?stacking)\("(.+?)"\)\}\}$/', trim($line), $matches)) {
+    if (preg_match('/^\{\{css((?:no)?stacking)\("(.+?)"\)\}\}$/', $line, $matches)) {
       if (isset($cssData->properties[$matches[2]]) && $matches[1] === 'stacking') {
         $cssData->properties[$matches[2]]->stacking = true;
       }
-    } else if (preg_match('/^\{\{css(not)?on(.+?)\("(.+?)"\)\}\}$/', trim($line), $matches)) {
+    } else if (preg_match('/^\{\{css(not)?on(.+?)\("(.+?)"\)\}\}$/', $line, $matches)) {
       if (isset($cssData->properties[$matches[3]]) && $matches[1] === '') {
         if (!isset($cssData->properties[$matches[3]]->alsoAppliesTo)) {
           $cssData->properties[$matches[3]]->alsoAppliesTo = [];
@@ -178,19 +178,20 @@
     $group = '';
 
     foreach(preg_split("/((\r?\n)|(\r\n?))/", $processedResponse) as $line) {
-      if (preg_match('/^\{\{/', trim($line)) === 0) {
-        $group = trim($line);
-      } else if (preg_match('/^{\{cssxref\("([^\/]+?)"\)\}\}$/', trim($line), $matches)) {
+      $line = trim($line);
+      if (preg_match('/^\{\{/', $line) === 0) {
+        $group = $line;
+      } else if (preg_match('/^{\{cssxref\("([^\/]+?)"\)\}\}$/', $line, $matches)) {
         if (!isset($cssData->properties[$matches[1]])) {
           $cssData->properties[$matches[1]] = new cssProperty();
           array_push($cssData->properties[$matches[1]]->groups, 'CSS ' . $group);
         }
-      } else if (!$parsingFunction($cssData, trim($line))) {
-	       if (preg_match('/^\{\{css(.+?)startdef\("([^\/]+?)"\)\}\}(.*?)\{\{css\1enddef\}\}$/', trim($line), $matches)) {
+      } else if (!$parsingFunction($cssData, $line)) {
+	       if (preg_match('/^\{\{css(.+?)startdef\("([^\/]+?)"\)\}\}(.*?)\{\{css\1enddef\}\}$/', $line, $matches)) {
 	        if (isset($cssData->properties[$matches[2]])) {
 	          $cssData->properties[$matches[2]]->{$matches[1]} = $matches[3];
 	        }
-	      } else if (preg_match('/^\{\{css(.+?)def\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', trim($line), $matches)) {
+	      } else if (preg_match('/^\{\{css(.+?)def\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', $line, $matches)) {
 	        if (isset($cssData->properties[$matches[2]])) {
 	          $cssData->properties[$matches[2]]->{$matches[1]} = $matches[3];
 	        }
