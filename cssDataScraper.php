@@ -142,6 +142,15 @@
   }
 
 
+  function removeTags($matches) {
+    if (isset($matches[1]) && ($matches[1] === 'code' || $matches[1] === 'a')) {
+      return $matches[0];
+    }
+
+    return '';
+  }
+
+
   $cssData = new cssData();
 
   $cssDataURLs = [
@@ -173,7 +182,7 @@
     foreach($columnNames as $columnName) {
       $processedResponse = str_ireplace('<th scope="col">' . $columnName . '</th>', '', $processedResponse);
     }
-    $processedResponse = preg_replace(['/<p>.*?<\/p>/', '/<.*?>/', '/^\s*[\r\n]*/m'], '', $processedResponse);
+    $processedResponse = preg_replace_callback(['/<p>.*?<\/p>/', '/<\/?([^\s>]*).*?>/', '/^\s*[\r\n]*/m'], 'removeTags', $processedResponse);
 
     $group = '';
 
