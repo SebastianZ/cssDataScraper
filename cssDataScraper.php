@@ -151,6 +151,57 @@
   }
 
 
+  function mapGroup($group) {
+    switch ($group) {
+      case 'Color':
+        return 'CSS Colors';
+
+      case 'Text decorations':
+        return 'CSS Text Decoration';
+
+      case 'Writing modes':
+        return 'CSS Writing Modes';
+
+      case 'Flexible boxes':
+        return 'CSS Flexible Box Layout';
+
+      case 'Background &amp; Borders':
+        return 'CSS Background and Borders';
+
+      case 'Counters &amp; Lists':
+        return 'CSS Lists and Counters';
+
+      case 'Page':
+        return 'CSS Pages';
+
+      case 'User interface':
+        return 'CSS User Interface';
+
+      case 'Generated content':
+        return 'CSS Generated Content';
+
+      case 'Filter Effects':
+        return 'Filter Effects';
+
+      case 'Compositing and Blending':
+        return 'Compositing and Blending';
+
+      case 'Pointer Events':
+        return 'Pointer Events';
+
+      case 'CSSOM View':
+        return 'CSSOM View';
+
+      case 'Counter Styles':
+        return 'CSS Lists and Counters';
+
+      case 'Media Queries':
+        return 'Media Queries';
+    }
+    return 'CSS ' . $group;
+  }
+
+
   $cssData = new cssData();
 
   $cssDataURLs = [
@@ -193,7 +244,7 @@
       } else if (preg_match('/^{\{cssxref\("([^\/]+?)"\)\}\}$/', $line, $matches)) {
         if (!isset($cssData->properties[$matches[1]])) {
           $cssData->properties[$matches[1]] = new cssProperty();
-          array_push($cssData->properties[$matches[1]]->groups, 'CSS ' . $group);
+          array_push($cssData->properties[$matches[1]]->groups, mapGroup($group));
         }
       } else if (!$parsingFunction($cssData, $line)) {
 	       if (preg_match('/^\{\{css(.+?)startdef\("([^\/]+?)"\)\}\}(.*?)\{\{css\1enddef\}\}$/', $line, $matches)) {
@@ -211,7 +262,7 @@
 
   // Add manual data
   $cssData->atRules['@charset'] = new atRule(['CSS Charsets']);
-  $cssData->atRules['@counter-style'] = new atRule(['CSS Counter Styles'], ['CSSCounterStyleRule']);
+  $cssData->atRules['@counter-style'] = new atRule(['CSS Lists and Counters'], ['CSSCounterStyleRule']);
 
   $cssData->atRules['@counter-style']->descriptors = [];
 
@@ -363,11 +414,11 @@
   $cssData->atRules['@font-face']->descriptors['font-feature-settings'] = $descriptor;
 
   $cssData->atRules['@font-feature-values'] = new atRule(['CSS Fonts'], ['CSSFontFeatureValuesRule']);
-  $cssData->atRules['@import'] = new atRule(['CSS Media Queries']);
+  $cssData->atRules['@import'] = new atRule(['Media Queries']);
   $cssData->atRules['@keyframes'] = new atRule(['CSS Animations'], ["CSSKeyframeRule", "CSSKeyframesRule"]);
-  $cssData->atRules['@media'] = new atRule(["CSS Conditional Rules", "CSS Media Queries"], ["CSSGroupingRule", "CSSConditionRule", "CSSMediaRule", "CSSCustomMediaRule"]);
+  $cssData->atRules['@media'] = new atRule(["CSS Conditional Rules", "Media Queries"], ["CSSGroupingRule", "CSSConditionRule", "CSSMediaRule", "CSSCustomMediaRule"]);
   $cssData->atRules['@namespace'] = new atRule(['CSS Namespaces']);
-  $cssData->atRules['@page'] = new atRule(['CSS Paged Media'], ['CSSPageRule']);
+  $cssData->atRules['@page'] = new atRule(['CSS Pages'], ['CSSPageRule']);
 
   $descriptor = new atRuleDescriptor();
   $descriptor->syntax = 'none | [ crop || cross ]';
@@ -386,7 +437,7 @@
   $cssData->atRules['@page']->descriptors['bleed'] = $descriptor;
 
   $cssData->atRules['@supports'] = new atRule(['CSS Conditional Rules'], ["CSSGroupingRule", "CSSConditionRule", "CSSSupportsRule"]);
-  $cssData->atRules['@viewport'] = new atRule(['CSS Viewport'], ['CSSViewportRule']);
+  $cssData->atRules['@viewport'] = new atRule(['CSS Device Adaptation'], ['CSSViewportRule']);
 
   $cssData->atRules['@viewport']->descriptors = [];
 
