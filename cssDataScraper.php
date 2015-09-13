@@ -64,7 +64,7 @@
   }
 
 
-  function parseAnimatedProperties($cssData, $line) {
+  function parseAnimatedProperties($cssData, $line, $property) {
     if (preg_match('/^\{\{css((?:not)?animatable)def\("([^\/]+?)"(?:,\s*"(.+?)")?(?:,\s*"(.+?)")?\)\}\}$/', $line, $matches)) {
       if (isset($cssData->properties[$matches[2]])) {
         $animatable = 'no';
@@ -80,8 +80,10 @@
       if (isset($cssData->properties[$matches[1]])) {
         $cssData->properties[$matches[1]]->animatable = preg_split('/\s+/', $matches[2]);
       }
+    } else if ($line !== '' && preg_match('/\{|</', $line)) {
+    	$cssData->properties[$property]->animatable = $line;
     } else {
-    	return false;
+      return false;
     }
 
     return true;
@@ -236,17 +238,19 @@
     $processedResponse = preg_replace_callback(['/<p>.*?<\/p>/', '/<\/?([^\s>]*).*?>/', '/^\s*[\r\n]*/m'], 'removeTags', $processedResponse);
 
     $group = '';
+    $property = '';
 
     foreach(preg_split("/((\r?\n)|(\r\n?))/", $processedResponse) as $line) {
       $line = trim($line);
-      if (preg_match('/^\{\{/', $line) === 0) {
+      if (preg_match('/^\{\{/', $line) === 0 && preg_match('/^[A-Z]/', $line) !== 0) {
         $group = $line;
       } else if (preg_match('/^{\{cssxref\("([^\/]+?)"\)\}\}$/', $line, $matches)) {
+        $property = $matches[1];
         if (!isset($cssData->properties[$matches[1]])) {
           $cssData->properties[$matches[1]] = new cssProperty();
           array_push($cssData->properties[$matches[1]]->groups, mapGroup($group));
         }
-      } else if (!$parsingFunction($cssData, $line)) {
+      } else if (!$parsingFunction($cssData, $line, $property)) {
 	       if (preg_match('/^\{\{css(.+?)startdef\("([^\/]+?)"\)\}\}(.*?)\{\{css\1enddef\}\}$/', $line, $matches)) {
 	        if (isset($cssData->properties[$matches[2]])) {
 	          $cssData->properties[$matches[2]]->{$matches[1]} = $matches[3];
