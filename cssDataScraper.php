@@ -337,10 +337,16 @@
             }
           } else if (preg_match('/^\{\{css(.+?)def\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', $line, $matches)) {
             if (isset($cssData->properties[$matches[2]])) {
-            	if (!isset($cssData->properties[$matches[2]]->{$matches[1]})) {
-            		$cssData->properties[$matches[2]]->{$matches[1]} = [];
-            	}
-              $cssData->properties[$matches[2]]->{$matches[1]}[$language] = $matches[3];
+            	if (in_array($matches[1], ['syntax', 'media'])) {
+            		if (!isset($cssData->properties[$matches[2]]->{$matches[1]})) {
+              		$cssData->properties[$matches[2]]->{$matches[1]} = $matches[3];
+            		}
+              } else {
+	            	if (!isset($cssData->properties[$matches[2]]->{$matches[1]})) {
+	            		$cssData->properties[$matches[2]]->{$matches[1]} = [];
+	            	}
+	              $cssData->properties[$matches[2]]->{$matches[1]}[$language] = $matches[3];
+              }
             }
           } else if (preg_match('/^\{\{css(.+?)shorthand\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', $line, $matches)) {
             if (isset($cssData->properties[$matches[2]])) {
