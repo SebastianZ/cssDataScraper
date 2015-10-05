@@ -127,6 +127,10 @@
       if (isset($cssData->properties[$matches[2]])) {
         $cssData->properties[$matches[2]]->percentages = ($matches[1] === 'percentage' ? $matches[3] : 'no');
       }
+    } else if (preg_match('/^\{\{csspercentagestartdef\("([^\/]+?)"\)\}\}(.*?)\{\{csspercentageenddef\}\}$/', $line, $matches)) {
+      if (isset($cssData->properties[$matches[1]])) {
+        $cssData->properties[$matches[1]]->percentages = $matches[2];
+      }
     } else if (preg_match('/^\{\{csspercentageshorthand\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', $line, $matches)) {
       if (isset($cssData->properties[$matches[1]])) {
         $cssData->properties[$matches[1]]->percentages = preg_split('/\s+/', $matches[2]);
