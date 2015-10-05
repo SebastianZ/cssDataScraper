@@ -462,7 +462,7 @@
   $descriptor->syntax = 'none | [ crop || cross ]';
   $descriptor->initial = 'none';
   $descriptor->percentages = 'no';
-  $descriptor->media = 'all';
+  $descriptor->media = 'visual, paged';
   $descriptor->computed = 'as specified';
   $cssData->atRules['@page']->descriptors['marks'] = $descriptor;
 
@@ -470,7 +470,7 @@
   $descriptor->syntax = 'auto | &lt;length&gt;';
   $descriptor->initial = 'auto';
   $descriptor->percentages = 'no';
-  $descriptor->media = 'all';
+  $descriptor->media = 'visual, paged';
   $descriptor->computed = 'as specified';
   $cssData->atRules['@page']->descriptors['bleed'] = $descriptor;
 
