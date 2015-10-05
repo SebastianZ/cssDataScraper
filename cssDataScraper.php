@@ -51,10 +51,6 @@
       if (!isset($cssData->syntaxes[$matches[1]])) {
         $cssData->syntaxes[$matches[1]] = $matches[2];
       }
-    } else if (preg_match('/^\{\{cssinitialshorthand\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', $line, $matches)) {
-      if (isset($cssData->properties[$matches[1]])) {
-        $cssData->properties[$matches[1]]->longhands = preg_split('/\s+/', $matches[2]);
-      }
     } else if (preg_match('/^\{\{cssinitialdef\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', $line, $matches)) {
       if (isset($cssData->properties[$matches[1]])) {
         $cssData->properties[$matches[1]]->initial = '<code>' . $matches[2] . '</code>';
@@ -79,11 +75,7 @@
         }
         $cssData->properties[$matches[2]]->animatable = $animatable;
       }
-    } else if (preg_match('/^\{\{cssanimatableshorthand\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', $line, $matches)) {
-      if (isset($cssData->properties[$matches[1]])) {
-        $cssData->properties[$matches[1]]->animatable = preg_split('/\s+/', $matches[2]);
-      }
-    } else if ($line !== '' && preg_match('/\{|</', $line)) {
+    } else if ($line !== '' && preg_match('/^[^\{<]+\{|</', $line)) {
     	$cssData->properties[$property]->animatable = $line;
     } else {
       return false;
@@ -112,10 +104,6 @@
       if (isset($cssData->properties[$matches[1]])) {
         $cssData->properties[$matches[1]]->order = 'appearance';
       }
-    } else if (preg_match('/^\{\{cssappliestoshorthand\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', $line, $matches)) {
-      if (isset($cssData->properties[$matches[1]])) {
-        $cssData->properties[$matches[1]]->appliesto = preg_split('/\s+/', $matches[2]);
-      }
     } else {
     	return false;
     }
@@ -132,10 +120,6 @@
     } else if (preg_match('/^\{\{csspercentagestartdef\("([^\/]+?)"\)\}\}(.*?)\{\{csspercentageenddef\}\}$/', $line, $matches)) {
       if (isset($cssData->properties[$matches[1]])) {
         $cssData->properties[$matches[1]]->percentages = $matches[2];
-      }
-    } else if (preg_match('/^\{\{csspercentageshorthand\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', $line, $matches)) {
-      if (isset($cssData->properties[$matches[1]])) {
-        $cssData->properties[$matches[1]]->percentages = preg_split('/\s+/', $matches[2]);
       }
     } else {
     	return false;
@@ -291,7 +275,11 @@
 	        if (isset($cssData->properties[$matches[2]])) {
 	          $cssData->properties[$matches[2]]->{$matches[1]} = $matches[3];
 	        }
-	      }
+        } else if (preg_match('/^\{\{css(.+?)shorthand\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', $line, $matches)) {
+          if (isset($cssData->properties[$matches[2]])) {
+            $cssData->properties[$matches[2]]->{$matches[1] === 'percentage' ? 'percentages' : $matches[1]} = preg_split('/\s+/', $matches[3]);
+          }
+        }
       }
 
       if (in_array($property, $ordersToSet) && isset($cssData->properties[$property]->order)) {
@@ -499,8 +487,10 @@
 
   $descriptor = new atRuleDescriptor();
   $descriptor->syntax = '&lt;viewport-length&gt;{1,2}';
+  $descriptor->initial = ['min-width', 'max-width'];
+  $descriptor->percentages = ['min-width', 'max-width'];
   $descriptor->media = 'visual, continuous';
-  $descriptor->longhands = ['min-width', 'max-width'];
+  $descriptor->computed = ['min-width', 'max-width'];
   $cssData->atRules['@viewport']->descriptors['width'] = $descriptor;
 
   $descriptor = new atRuleDescriptor();
@@ -521,8 +511,10 @@
 
   $descriptor = new atRuleDescriptor();
   $descriptor->syntax = '&lt;viewport-length&gt;{1,2}';
+  $descriptor->initial = ['min-height', 'max-height'];
+  $descriptor->percentages = ['min-height', 'max-height'];
   $descriptor->media = 'visual, continuous';
-  $descriptor->longhands = ['min-height', 'max-height'];
+  $descriptor->computed = ['min-height', 'max-height'];
   $cssData->atRules['@viewport']->descriptors['height'] = $descriptor;
 
   $descriptor = new atRuleDescriptor();
