@@ -333,7 +333,9 @@
             	if (!isset($cssData->properties[$matches[2]]->{$matches[1]})) {
             		$cssData->properties[$matches[2]]->{$matches[1]} = [];
             	}
-              $cssData->properties[$matches[2]]->{$matches[1]}[$language] = $matches[3];
+            	if ($language === 'en-US' || $matches[3] !== $cssData->properties[$matches[2]]->{$matches[1]}['en-US']) {
+                $cssData->properties[$matches[2]]->{$matches[1]}[$language] = $matches[3];
+            	}
             }
           } else if (preg_match('/^\{\{css(.+?)def\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', $line, $matches)) {
             if (isset($cssData->properties[$matches[2]])) {
@@ -345,7 +347,9 @@
 	            	if (!isset($cssData->properties[$matches[2]]->{$matches[1]})) {
 	            		$cssData->properties[$matches[2]]->{$matches[1]} = [];
 	            	}
-	              $cssData->properties[$matches[2]]->{$matches[1]}[$language] = $matches[3];
+	            	if ($language === 'en-US' || $matches[3] !== $cssData->properties[$matches[2]]->{$matches[1]}['en-US']) {
+	                $cssData->properties[$matches[2]]->{$matches[1]}[$language] = $matches[3];
+	            	}
               }
             }
           } else if (preg_match('/^\{\{css(.+?)shorthand\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', $line, $matches)) {
