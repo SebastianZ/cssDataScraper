@@ -4,6 +4,7 @@
   }
 
   $jsonFileName = 'cssData.json';
+  $ordersToSet = [];
 
   class cssData {
     public $properties = [];
@@ -95,9 +96,19 @@
 
 
   function parseValuesSerialization($cssData, $line) {
+  	global $ordersToSet;
+
     if (preg_match('/^\{\{csscomputedcolordef\("([^\/]+?)"\)\}\}$/', $line, $matches)) {
       if (isset($cssData->properties[$matches[1]])) {
         $cssData->properties[$matches[1]]->computed = 'color';
+      }
+    } else if (preg_match('/^\{\{cssorderstartdef\("(.+?)"\)\}\}\{\{cssorder\("(.+?)"\)\}\}/', $line, $matches)) {
+      if (isset($cssData->properties[$matches[1]])) {
+      	if (!isset($cssData->properties[$matches[2]]->order)) {
+      		$ordersToSet[$matches[1]] = $matches[2];
+      	} else {
+          $cssData->properties[$matches[1]]->order = $cssData->properties[$matches[2]]->order;
+      	}
       }
     } else if (preg_match('/^\{\{cssorderofappearancedef\("(.+?)"\)\}\}$/', $line, $matches)) {
       if (isset($cssData->properties[$matches[1]])) {
@@ -264,6 +275,10 @@
 	          $cssData->properties[$matches[2]]->{$matches[1]} = $matches[3];
 	        }
 	      }
+      }
+
+      if (in_array($property, $ordersToSet) && isset($cssData->properties[$property]->order)) {
+      	$cssData->properties[array_search($property, $ordersToSet)]->order = $cssData->properties[$property]->order;
       }
     }
   }
