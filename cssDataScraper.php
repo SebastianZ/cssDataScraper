@@ -829,11 +829,18 @@
   $selector->groups = ['Pseudo-elements'];
   $cssData->selectors['::backdrop'] = $selector;
 
+  echo '<html>' .
+      '<head>' .
+      '<title>CSS Data Scraper</title>' .
+      '</head>' .
+      '<body>';
   if (function_exists('dump')) {
     dump($cssData);
   } else {
     var_dump($cssData);
   }
+  echo '</body>' .
+      '</html>';
 
   file_put_contents($jsonFileName, json_encode($cssData, JSON_PRETTY_PRINT));
 ?>
