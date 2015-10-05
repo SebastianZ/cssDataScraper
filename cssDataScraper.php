@@ -222,8 +222,19 @@
     return 'CSS ' . $group;
   }
 
-
   $cssData = new cssData();
+
+  // Add sub-syntaxes, which are not listed within the info pages
+  $cssData->syntaxes['color'] = '&lt;rgb()&gt; | &lt;rgba()&gt; | &lt;hsl()&gt; | &lt;hsla()&gt; | &lt;hex-color&gt; | &lt;named-color&gt; | currentcolor | &lt;deprecated-system-color&gt;';
+  $cssData->syntaxes['rgb()'] = 'rgb( &lt;rgb-component&gt;#{3} )';
+  $cssData->syntaxes['rgba()'] = 'rgba( &lt;rgb-component&gt;#{3} , &lt;alpha-value&gt; )';
+  $cssData->syntaxes['rgb-component'] = '&lt;integer&gt; | &lt;percentage&gt;';
+  $cssData->syntaxes['alpha-value'] = '&lt;number&gt;';
+  $cssData->syntaxes['hsl()'] = 'hsl( &lt;hue&gt;, &lt;percentage&gt;, &lt;percentage&gt; )';
+  $cssData->syntaxes['hsla()'] = 'hsla( &lt;hue&gt;, &lt;percentage&gt;, &lt;percentage&gt;, &lt;alpha-value&gt; )';
+  $cssData->syntaxes['hue'] = '&lt;number&gt;';
+  $cssData->syntaxes['named-color'] = '&lt;ident&gt;';
+  $cssData->syntaxes['deprecated-system-color'] = 'ActiveBorder | ActiveCaption | AppWorkspace | Background | ButtonFace | ButtonHighlight | ButtonShadow | ButtonText | CaptionText | GrayText | Highlight | HighlightText | InactiveBorder | InactiveCaption | InactiveCaptionText | InfoBackground | InfoText | Menu | MenuText | Scrollbar | ThreeDDarkShadow | ThreeDFace | ThreeDHighlight | ThreeDLightShadow | ThreeDShadow | Window | WindowFrame | WindowText';
 
   $cssDataURLs = [
       'CSS_values_syntax' => 'parseValuesSyntax',
@@ -270,7 +281,7 @@
           array_push($cssData->properties[$matches[1]]->groups, mapGroup($group));
         }
       } else if (!$parsingFunction($cssData, $line, $property)) {
-	       if (preg_match('/^\{\{css(.+?)startdef\("([^\/]+?)"\)\}\}(.*?)\{\{css\1enddef\}\}$/', $line, $matches)) {
+        if (preg_match('/^\{\{css(.+?)startdef\("([^\/]+?)"\)\}\}(.*?)\{\{css\1enddef\}\}$/', $line, $matches)) {
 	        if (isset($cssData->properties[$matches[2]])) {
 	          $cssData->properties[$matches[2]]->{$matches[1]} = $matches[3];
 	        }
