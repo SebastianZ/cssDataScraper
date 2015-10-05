@@ -314,7 +314,7 @@
 
   $descriptor = new atRuleDescriptor();
   $descriptor->syntax = '&lt;symbol&gt; &lt;symbol&gt;?';
-  $descriptor->initial = '\"-\" hyphen-minus';
+  $descriptor->initial = '"-" hyphen-minus';
   $descriptor->percentages = 'no';
   $descriptor->media = 'all';
   $descriptor->computed = 'as specified';
@@ -330,7 +330,7 @@
 
   $descriptor = new atRuleDescriptor();
   $descriptor->syntax = '&lt;symbol&gt;';
-  $descriptor->initial = '\".\" full stop followed by a space';
+  $descriptor->initial = '"." full stop followed by a space';
   $descriptor->percentages = 'no';
   $descriptor->media = 'all';
   $descriptor->computed = 'as specified';
@@ -346,7 +346,7 @@
 
   $descriptor = new atRuleDescriptor();
   $descriptor->syntax = '&lt;integer&gt; &amp;&amp; &lt;symbol&gt;';
-  $descriptor->initial = '0 \"\"';
+  $descriptor->initial = '0 ""';
   $descriptor->percentages = 'no';
   $descriptor->media = 'all';
   $descriptor->computed = 'as specified';
