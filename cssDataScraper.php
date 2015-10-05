@@ -3,6 +3,8 @@
     require_once 'PHPDump/src/debug.php';
   }
 
+  set_time_limit(120);
+
   $jsonFileName = 'cssData.json';
   $ordersToSet = [];
 
@@ -42,7 +44,7 @@
   }
 
 
-  function parseValuesSyntax($cssData, $line) {
+  function parseValuesSyntax($cssData, $line, $property, $language) {
     if (preg_match('/^\{\{css(doesinherit|notinherited)\("([^\/]+?)"\)\}\}$/', $line, $matches)) {
       if (isset($cssData->properties[$matches[2]])) {
         $cssData->properties[$matches[2]]->inherited = ($matches[1] === 'doesinherit');
@@ -53,17 +55,21 @@
       }
     } else if (preg_match('/^\{\{cssinitialdef\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', $line, $matches)) {
       if (isset($cssData->properties[$matches[1]])) {
-        $cssData->properties[$matches[1]]->initial = '<code>' . $matches[2] . '</code>';
+      	if (isset($cssData->properties[$matches[1]]->initial) && is_array($cssData->properties[$matches[1]]->initial)) {
+          $cssData->properties[$matches[1]]->initial[$language] = '<code>' . $matches[2] . '</code>';
+      	} else {
+          $cssData->properties[$matches[1]]->initial = '<code>' . $matches[2] . '</code>';
+      	}
       }
     } else {
-    	return false;
+      return false;
     }
 
     return true;
   }
 
 
-  function parseAnimatedProperties($cssData, $line, $property) {
+  function parseAnimatedProperties($cssData, $line, $property, $language) {
     if (preg_match('/^\{\{css((?:not)?animatable)def\("([^\/]+?)"(?:,\s*"(.+?)")?(?:,\s*"(.+?)")?\)\}\}$/', $line, $matches)) {
       if (isset($cssData->properties[$matches[2]])) {
         $animatable = 'no';
@@ -76,7 +82,7 @@
         $cssData->properties[$matches[2]]->animatable = $animatable;
       }
     } else if ($line !== '' && preg_match('/^[^\{<]+\{|</', $line)) {
-    	$cssData->properties[$property]->animatable = $line;
+      $cssData->properties[$property]->animatable = $line;
     } else {
       return false;
     }
@@ -85,8 +91,8 @@
   }
 
 
-  function parseValuesSerialization($cssData, $line) {
-  	global $ordersToSet;
+  function parseValuesSerialization($cssData, $line, $property, $language) {
+    global $ordersToSet;
 
     if (preg_match('/^\{\{csscomputedcolordef\("([^\/]+?)"\)\}\}$/', $line, $matches)) {
       if (isset($cssData->properties[$matches[1]])) {
@@ -98,11 +104,11 @@
       }
     } else if (preg_match('/^\{\{cssorderstartdef\("(.+?)"\)\}\}\{\{cssorder\("(.+?)"\)\}\}/', $line, $matches)) {
       if (isset($cssData->properties[$matches[1]])) {
-      	if (!isset($cssData->properties[$matches[2]]->order)) {
-      		$ordersToSet[$matches[1]] = $matches[2];
-      	} else {
+        if (!isset($cssData->properties[$matches[2]]->order)) {
+          $ordersToSet[$matches[1]] = $matches[2];
+        } else {
           $cssData->properties[$matches[1]]->order = $cssData->properties[$matches[2]]->order;
-      	}
+        }
       }
     } else if (preg_match('/^\{\{cssuniqueorderdef\("(.+?)"\)\}\}$/', $line, $matches)) {
       if (isset($cssData->properties[$matches[1]])) {
@@ -113,31 +119,37 @@
         $cssData->properties[$matches[1]]->order = 'orderOfAppearance';
       }
     } else {
-    	return false;
+      return false;
     }
 
     return true;
   }
 
 
-  function parsePercentageValues($cssData, $line) {
+  function parsePercentageValues($cssData, $line, $property, $language) {
     if (preg_match('/^\{\{css((?:no)?percentage)def\("([^\/]+?)"(?:,\s*"(.+)")?\)\}\}$/', $line, $matches)) {
-      if (isset($cssData->properties[$matches[2]])) {
-        $cssData->properties[$matches[2]]->percentages = ($matches[1] === 'percentage' ? $matches[3] : 'no');
+      if (isset($cssData->properties[$matches[2]]) && $matches[1] === 'percentage') {
+        if ($cssData->properties[$matches[2]]->percentages === 'no') {
+      		$cssData->properties[$matches[2]]->percentages = [];
+        }
+    	  $cssData->properties[$matches[2]]->percentages[$language] = $matches[3];
       }
     } else if (preg_match('/^\{\{csspercentagestartdef\("([^\/]+?)"\)\}\}(.*?)\{\{csspercentageenddef\}\}$/', $line, $matches)) {
       if (isset($cssData->properties[$matches[1]])) {
-        $cssData->properties[$matches[1]]->percentages = $matches[2];
+      	if ($cssData->properties[$matches[1]]->percentages === 'no') {
+      		$cssData->properties[$matches[1]]->percentages = [];
+      	}
+        $cssData->properties[$matches[1]]->percentages[$language] = $matches[2];
       }
     } else {
-    	return false;
+      return false;
     }
 
     return true;
   }
 
 
-  function parseSpecialProperties($cssData, $line) {
+  function parseSpecialProperties($cssData, $line, $property, $language) {
     if (preg_match('/^\{\{css((?:no)?stacking)\("(.+?)"\)\}\}$/', $line, $matches)) {
       if (isset($cssData->properties[$matches[2]]) && $matches[1] === 'stacking') {
         $cssData->properties[$matches[2]]->stacking = true;
@@ -150,7 +162,7 @@
         array_push($cssData->properties[$matches[3]]->alsoAppliesTo, $matches[2]);
       }
     } else {
-    	return false;
+      return false;
     }
 
     return true;
@@ -231,67 +243,115 @@
   $cssData->syntaxes['deprecated-system-color'] = 'ActiveBorder | ActiveCaption | AppWorkspace | Background | ButtonFace | ButtonHighlight | ButtonShadow | ButtonText | CaptionText | GrayText | Highlight | HighlightText | InactiveBorder | InactiveCaption | InactiveCaptionText | InfoBackground | InfoText | Menu | MenuText | Scrollbar | ThreeDDarkShadow | ThreeDFace | ThreeDHighlight | ThreeDLightShadow | ThreeDShadow | Window | WindowFrame | WindowText';
 
   $cssDataURLs = [
-      'CSS_values_syntax' => 'parseValuesSyntax',
-      'CSS_animated_properties' => 'parseAnimatedProperties',
-      'CSS_values_serialization' => 'parseValuesSerialization',
-      'CSS_percentage_values' => 'parsePercentageValues',
-      'CSS_special_properties' => 'parseSpecialProperties'
+      'CSS_values_syntax' => [
+          'languages' => [
+              'en-US',
+              'de',
+              'fr',
+              'ja',
+              'zh-CN'
+          ],
+          'parserFunction' => 'parseValuesSyntax'
+      ],
+      'CSS_animated_properties' => [
+          'languages' => [
+              'en-US',
+              'de',
+              'es',
+              'fr',
+              'ja',
+              'ru',
+              'zh-CN'
+          ],
+          'parserFunction' => 'parseAnimatedProperties'
+      ],
+      'CSS_values_serialization' => [
+          'languages' => [
+              'en-US',
+              'de',
+              'fr',
+              'ja'
+          ],
+          'parserFunction' => 'parseValuesSerialization'
+      ],
+      'CSS_percentage_values' => [
+          'languages' => [
+              'en-US',
+              'de',
+              'fr'
+          ],
+          'parserFunction' => 'parsePercentageValues'
+      ],
+      'CSS_special_properties' => [
+          'languages' => [
+              'en-US'
+          ],
+          'parserFunction' => 'parseSpecialProperties'
+      ]
   ];
 
-  foreach ($cssDataURLs as $cssDataURL => $parsingFunction) {
-    $fileName = $cssDataURL . '.html';
-    if (isset($_GET['refresh']) || !file_exists($fileName)) {
-      $fetchLocation = 'https://developer.mozilla.org/en-US/docs/Web/CSS/' . $cssDataURL . '?raw';
-    } else {
-      $fetchLocation = $fileName;
-    }
+  foreach ($cssDataURLs as $cssDataURL => $cssDataURLInfo) {
+    foreach ($cssDataURLInfo['languages'] as $language) {
+      $fileName = $cssDataURL . '.' . $language . '.html';
+      if (isset($_GET['refresh']) || !file_exists($fileName)) {
+        $fetchLocation = 'https://developer.mozilla.org/' . $language . '/docs/Web/CSS/' . $cssDataURL . '?raw';
+      } else {
+        $fetchLocation = $fileName;
+      }
+    
+      $response = file_get_contents($fetchLocation);
+    
+      if (isset($_GET['refresh']) || !file_exists($fileName)) {
+        file_put_contents($fileName, $response);
+      }
+    
+      $processedResponse = $response;
+      $columnNames = ['Property', 'Syntax', 'Initial value', 'Inherited', 'Media', 'Animatable', 'Applies to', 'Computed value', 'Canonical order',
+          'Percentage values'
+      ];
+      foreach($columnNames as $columnName) {
+        $processedResponse = str_ireplace('<th scope="col">' . $columnName . '</th>', '', $processedResponse);
+      }
+      $processedResponse = preg_replace_callback(['/<p>.*?<\/p>/', '/<\/?([^\s>]*).*?>/', '/^\s*[\r\n]*/m'], 'removeTags', $processedResponse);
   
-    $response = file_get_contents($fetchLocation);
+      $group = '';
+      $property = '';
   
-    if (isset($_GET['refresh']) || !file_exists($fileName)) {
-      file_put_contents($fileName, $response);
-    }
-  
-    $processedResponse = $response;
-    $columnNames = ['Property', 'Syntax', 'Initial value', 'Inherited', 'Media', 'Animatable', 'Applies to', 'Computed value', 'Canonical order',
-        'Percentage values'
-    ];
-    foreach($columnNames as $columnName) {
-      $processedResponse = str_ireplace('<th scope="col">' . $columnName . '</th>', '', $processedResponse);
-    }
-    $processedResponse = preg_replace_callback(['/<p>.*?<\/p>/', '/<\/?([^\s>]*).*?>/', '/^\s*[\r\n]*/m'], 'removeTags', $processedResponse);
-
-    $group = '';
-    $property = '';
-
-    foreach(preg_split("/((\r?\n)|(\r\n?))/", $processedResponse) as $line) {
-      $line = trim($line);
-      if (preg_match('/^\{\{/', $line) === 0 && preg_match('/^[A-Z]/', $line) !== 0) {
-        $group = $line;
-      } else if (preg_match('/^{\{cssxref\("([^\/]+?)"\)\}\}$/', $line, $matches)) {
-        $property = $matches[1];
-        if (!isset($cssData->properties[$matches[1]])) {
-          $cssData->properties[$matches[1]] = new cssProperty();
-          array_push($cssData->properties[$matches[1]]->groups, mapGroup($group));
-        }
-      } else if (!$parsingFunction($cssData, $line, $property)) {
-        if (preg_match('/^\{\{css(.+?)startdef\("([^\/]+?)"\)\}\}(.*?)\{\{css\1enddef\}\}$/', $line, $matches)) {
-	        if (isset($cssData->properties[$matches[2]])) {
-	          $cssData->properties[$matches[2]]->{$matches[1]} = $matches[3];
-	        }
-	      } else if (preg_match('/^\{\{css(.+?)def\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', $line, $matches)) {
-	        if (isset($cssData->properties[$matches[2]])) {
-	          $cssData->properties[$matches[2]]->{$matches[1]} = $matches[3];
-	        }
-        } else if (preg_match('/^\{\{css(.+?)shorthand\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', $line, $matches)) {
-          if (isset($cssData->properties[$matches[2]])) {
-            $cssData->properties[$matches[2]]->{$matches[1] === 'percentage' ? 'percentages' : $matches[1]} = preg_split('/\s+/', $matches[3]);
+      foreach(preg_split("/((\r?\n)|(\r\n?))/", $processedResponse) as $line) {
+        $line = trim($line);
+        if (preg_match('/^\{\{/', $line) === 0 && preg_match('/^[A-Z]/', $line) !== 0) {
+          $group = $line;
+        } else if (preg_match('/^{\{cssxref\("([^\/]+?)"\)\}\}$/', $line, $matches)) {
+          $property = $matches[1];
+          if (!isset($cssData->properties[$matches[1]])) {
+            $cssData->properties[$matches[1]] = new cssProperty();
+            array_push($cssData->properties[$matches[1]]->groups, mapGroup($group));
+          }
+        } else if (!$cssDataURLInfo['parserFunction']($cssData, $line, $property, $language)) {
+          if (preg_match('/^\{\{css(.+?)startdef\("([^\/]+?)"\)\}\}(.*?)\{\{css\1enddef\}\}$/', $line, $matches)) {
+            if (isset($cssData->properties[$matches[2]])) {
+            	if (!isset($cssData->properties[$matches[2]]->{$matches[1]})) {
+            		$cssData->properties[$matches[2]]->{$matches[1]} = [];
+            	}
+              $cssData->properties[$matches[2]]->{$matches[1]}[$language] = $matches[3];
+            }
+          } else if (preg_match('/^\{\{css(.+?)def\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', $line, $matches)) {
+            if (isset($cssData->properties[$matches[2]])) {
+            	if (!isset($cssData->properties[$matches[2]]->{$matches[1]})) {
+            		$cssData->properties[$matches[2]]->{$matches[1]} = [];
+            	}
+              $cssData->properties[$matches[2]]->{$matches[1]}[$language] = $matches[3];
+            }
+          } else if (preg_match('/^\{\{css(.+?)shorthand\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', $line, $matches)) {
+            if (isset($cssData->properties[$matches[2]])) {
+              $cssData->properties[$matches[2]]->{$matches[1] === 'percentage' ? 'percentages' : $matches[1]} = preg_split('/\s+/', $matches[3]);
+            }
           }
         }
-      }
-
-      if (in_array($property, $ordersToSet) && isset($cssData->properties[$property]->order)) {
-      	$cssData->properties[array_search($property, $ordersToSet)]->order = $cssData->properties[$property]->order;
+  
+        if (in_array($property, $ordersToSet) && isset($cssData->properties[$property]->order)) {
+          $cssData->properties[array_search($property, $ordersToSet)]->order = $cssData->properties[$property]->order;
+        }
       }
     }
   }
