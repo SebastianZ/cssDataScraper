@@ -16,7 +16,6 @@
   class cssProperty {
     public $syntax;
     public $media;
-    public $shorthand = false;
     public $inherited = false;
     public $animatable = 'no';
     public $percentages = 'no';
@@ -54,7 +53,6 @@
       }
     } else if (preg_match('/^\{\{cssinitialshorthand\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', $line, $matches)) {
       if (isset($cssData->properties[$matches[1]])) {
-        $cssData->properties[$matches[1]]->shorthand = true;
         $cssData->properties[$matches[1]]->longhands = preg_split('/\s+/', $matches[2]);
       }
     } else if (preg_match('/^\{\{cssinitialdef\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', $line, $matches)) {
