@@ -114,6 +114,10 @@
       if (isset($cssData->properties[$matches[1]])) {
         $cssData->properties[$matches[1]]->order = 'appearance';
       }
+    } else if (preg_match('/^\{\{cssappliestoshorthand\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', $line, $matches)) {
+      if (isset($cssData->properties[$matches[1]])) {
+        $cssData->properties[$matches[1]]->appliesto = preg_split('/\s+/', $matches[2]);
+      }
     } else {
     	return false;
     }
