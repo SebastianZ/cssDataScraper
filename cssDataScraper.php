@@ -366,6 +366,196 @@
     }
   }
 
+  // Replace common translations by keywords
+  foreach ($cssData->properties as $property) {
+    if (isset($property->appliesto['en-US'])) {
+      switch ($property->appliesto['en-US']) {
+        case 'all elements':
+          $property->appliesto = 'allElements';
+          break;
+
+        case 'all elements, {{cssxref("::before")}} and {{cssxref("::after")}} <a href="/en-US/docs/CSS/Pseudo-elements" title="/en-US/docs/CSS/Pseudo-elements">pseudo-elements</a>':
+          $property->appliesto = 'allElementsAndPseudos';
+          break;
+
+        case 'all elements; In SVG, it applies to container elements excluding the {{SVGElement("defs")}} element and all graphics elements':
+        case 'All elements. In SVG, it applies to container elements excluding the {{SVGElement("defs")}} element and all graphics elements':
+        case 'All elements. In SVG, it applies to container elements without the {{SVGElement("defs")}} element and all graphics elements':
+          $property->appliesto = 'allElementsSVGContainerElements';
+          break;
+
+        case 'non-replaced <code>block</code> elements (except <code>table</code> elements), <code>table-cell</code> or <code>inline-block</code> elements':
+          $property->appliesto = 'nonReplacedBlockElements';
+          break;
+
+        case 'block-level elements':
+          $property->appliesto = 'blockLevelElements';
+          break;
+
+        case 'block containers':
+          $property->appliesto = 'blockContainers';
+          break;
+
+        case 'transformable elements':
+          $property->appliesto = 'transformableElements';
+          break;
+
+        case 'multicol elements':
+          $property->appliesto = 'multicolElements';
+          break;
+
+        case 'flex containers':
+          $property->appliesto = 'flexContainers';
+          break;
+
+        case 'flex items, including in-flow pseudo-elements':
+          $property->appliesto = 'flexItemsAndInFlowPseudos';
+          break;
+
+        case 'all elements; but UA are not required to apply to <code>table</code> and <code>inline-table</code> elements when {{cssxref("border-collapse")}} is <code>collapse</code>. The behavior on internal table elements is undefined for the moment.':
+          $property->appliesto = 'allElementsUAsNotRequiredWhenCollapse';
+          break;
+
+        case 'all elements, except internal table elements when {{cssxref("border-collapse")}} is <code>collapse</code>':
+          $property->appliesto = 'allElementsExceptTableElementsWhenCollapse';
+          break;
+
+        case 'all elements except elements with table {{cssxref("display")}} types other than <code>table-caption</code>, <code>table</code> and <code>inline-table</code>':
+          $property->appliesto = 'allElementsExceptTableDisplayTypes';
+          break;
+
+        case 'all elements except <code>table-row-group</code>, <code>table-header-group</code>, <code>table-footer-group</code>, <code>table-row</code>, <code>table-column-group</code> and <code>table-column</code>':
+          $property->appliesto = 'allElementsExceptInternalTableDisplayTypes';
+          break;
+
+        case 'all elements but non-replaced inline elements, table columns, and column groups':
+          $property->appliesto = 'allElementsButNonReplacedAndTableColumns';
+          break;
+
+        case 'all elements but non-replaced inline elements, table rows, and row groups':
+          $property->appliesto = 'allElementsButNonReplacedAndTableRows';
+          break;
+
+        case 'non-replaced block-level elements and non-replaced inline-block elements':
+          $property->appliesto = 'nonReplacedBlockElements';
+          break;
+
+        case 'table and inline-table elements':
+          $property->appliesto = 'tableElements';
+          break;
+
+        case 'positioned elements':
+          $property->appliesto = 'positionedElements';
+          break;
+
+        case 'list items':
+          $property->appliesto = 'listItems';
+          break;
+
+        case 'block container elements':
+          $property->appliesto = 'blockContainerElements';
+          break;
+
+        case 'block-level elements in the normal flow of the root element. UA may also apply it to other elements like table-row elements.':
+          $property->appliesto = 'blockElementsInNormalFlow';
+          break;
+
+        case 'floats':
+          $property->appliesto = 'floats';
+          break;
+
+        case 'same as {{cssxref("width")}} and {{cssxref("height")}}':
+          $property->appliesto = 'sameAsWidthAndHeight';
+          break;
+
+        case 'same as {{cssxref("margin")}}':
+          $property->appliesto = 'sameAsMargin';
+          break;
+
+        case 'scroll containers':
+          $property->appliesto = 'scrollContainers';
+          break;
+      }
+    }
+
+    if (isset($property->percentages['en-US'])) {
+      switch ($property->percentages['en-US']) {
+        case 'refer to the size of bounding box':
+          $property->percentages = 'referToSizeOfBoundingBox';
+          break;
+
+        case 'refer to the width of the containing block':
+        case 'refer to the width of the element’s containing block':
+          $property->percentages = 'referToWidthOfContainingBlock';
+          break;
+
+        case 'as specified':
+          $property->percentages = 'asSpecified';
+          break;
+
+        case 'block-size of containing block':
+          $property->percentages = 'blockSizeOfContainingBlock';
+          break;
+
+        case 'inline-size of containing block':
+          $property->percentages = 'inlineSizeOfContainingBlock';
+          break;
+
+        case 'depends on layout model':
+          $property->percentages = 'dependsOnLayoutModel';
+          break;
+
+        case 'logical-width of containing block':
+          $property->percentages = 'logicalWidthOfContainingBlock';
+          break;
+
+        case 'relative to same axis of the padding-box of the scroll container':
+          $property->percentages = 'logicalWidthOfContainingBlock';
+          break;
+      }
+    }
+
+    if (isset($property->computed['en-US'])) {
+      switch ($property->computed['en-US']) {
+        case 'as specified, but with relative lengths converted into absolute lengths':
+        case 'as specified, with lengths made absolute':
+        case 'as specified, but with lengths made absolute':
+        case 'specified value, with lengths made absolute':
+          $property->computed = 'asSpecifiedRelativeToAbsoluteLengths';
+          break;
+
+        case 'two absolute length or percentages':
+          $property->computed = 'twoAbsoluteLengthOrPercentages';
+          break;
+
+        case 'the percentage as specified or the absolute length':
+          $property->computed = 'percentageAsSpecifiedOrAbsoluteLength';
+          break;
+
+        case 'if specified as a length, the corresponding absolute length; if specified as a percentage, the specified value; otherwise, <code>auto</code>':
+        case 'the percentage as specified or the absolute length or auto':
+          $property->computed = 'lengthAbsolutePercentageAsSpecifiedOtherwiseAuto';
+          break;
+
+        case 'same as box offsets: {{cssxref("top")}}, {{cssxref("right")}}, {{cssxref("bottom")}}, {{cssxref("left")}} properties except that directions are logical':
+          $property->computed = 'sameAsBoxOffsets';
+          break;
+
+        case 'length':
+          $property->computed = 'asLength';
+          break;
+
+        case 'absolute length; 0 if the border style is none or hidden':
+          $property->computed = 'absoluteLengthZeroIfBorderStyleNoneOrHidden';
+          break;
+
+        case 'computed color':
+          $property->computed = 'computedColor';
+          break;
+      }
+    }
+  }
+
   // Add manual data
   $cssData->atRules['@charset'] = new atRule(['CSS Charsets']);
   $cssData->atRules['@counter-style'] = new atRule(['CSS Lists and Counters'], ['CSSCounterStyleRule']);
