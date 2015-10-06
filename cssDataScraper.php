@@ -359,7 +359,7 @@
               }
             }
           } else if (preg_match('/^\{\{css(.+?)shorthand\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', $line, $matches)) {
-            if (isset($cssData->properties[$matches[2]])) {
+            if (isset($cssData->properties[$matches[2]]) && $language === 'en-US') {
               $cssData->properties[$matches[2]]->{$matches[1] === 'percentage' ? 'percentages' : $matches[1]} = preg_split('/\s+/', $matches[3]);
             }
           }
