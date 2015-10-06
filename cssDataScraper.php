@@ -753,7 +753,7 @@
   $descriptor->initial = 'auto';
   $descriptor->percentages = 'refer to the width of the initial viewport';
   $descriptor->media = 'visual, continuous';
-  $descriptor->computed = 'auto, an absolute length, or a percentage asSpecified';
+  $descriptor->computed = 'auto, an absolute length, or a percentage as specified';
   $cssData->atRules['@viewport']->descriptors['min-width'] = $descriptor;
 
   $descriptor = new atRuleDescriptor();
@@ -761,7 +761,7 @@
   $descriptor->initial = 'auto';
   $descriptor->percentages = 'refer to the width of the initial viewport';
   $descriptor->media = 'visual, continuous';
-  $descriptor->computed = 'auto, an absolute length, or a percentage asSpecified';
+  $descriptor->computed = 'auto, an absolute length, or a percentage as specified';
   $cssData->atRules['@viewport']->descriptors['max-width'] = $descriptor;
 
   $descriptor = new atRuleDescriptor();
@@ -777,7 +777,7 @@
   $descriptor->initial = 'auto';
   $descriptor->percentages = 'refer to the height of the initial viewport';
   $descriptor->media = 'visual, continuous';
-  $descriptor->computed = 'auto, an absolute length, or a percentage asSpecified';
+  $descriptor->computed = 'auto, an absolute length, or a percentage as specified';
   $cssData->atRules['@viewport']->descriptors['min-height'] = $descriptor;
 
   $descriptor = new atRuleDescriptor();
@@ -785,7 +785,7 @@
   $descriptor->initial = 'auto';
   $descriptor->percentages = 'refer to the height of the initial viewport';
   $descriptor->media = 'visual, continuous';
-  $descriptor->computed = 'auto, an absolute length, or a percentage asSpecified';
+  $descriptor->computed = 'auto, an absolute length, or a percentage as specified';
   $cssData->atRules['@viewport']->descriptors['max-height'] = $descriptor;
 
   $descriptor = new atRuleDescriptor();
@@ -801,7 +801,7 @@
   $descriptor->initial = 'auto';
   $descriptor->percentages = 'the zoom factor itself';
   $descriptor->media = 'visual, continuous';
-  $descriptor->computed = 'auto, or a non-negative number or percentage asSpecified';
+  $descriptor->computed = 'auto, or a non-negative number or percentage as specified';
   $cssData->atRules['@viewport']->descriptors['zoom'] = $descriptor;
 
   $descriptor = new atRuleDescriptor();
@@ -809,7 +809,7 @@
   $descriptor->initial = 'auto';
   $descriptor->percentages = 'the zoom factor itself';
   $descriptor->media = 'visual, continuous';
-  $descriptor->computed = 'auto, or a non-negative number or percentage asSpecified';
+  $descriptor->computed = 'auto, or a non-negative number or percentage as specified';
   $cssData->atRules['@viewport']->descriptors['min-zoom'] = $descriptor;
 
   $descriptor = new atRuleDescriptor();
@@ -817,7 +817,7 @@
   $descriptor->initial = 'auto';
   $descriptor->percentages = 'the zoom factor itself';
   $descriptor->media = 'visual, continuous';
-  $descriptor->computed = 'auto, or a non-negative number or percentage asSpecified';
+  $descriptor->computed = 'auto, or a non-negative number or percentage as specified';
   $cssData->atRules['@viewport']->descriptors['max-zoom'] = $descriptor;
 
   $descriptor = new atRuleDescriptor();
