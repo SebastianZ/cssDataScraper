@@ -560,6 +560,11 @@
           break;
       }
     }
+
+    if (isset($property->animatable['as'])) {
+    	$property->animatable['as'] = str_replace(['repeatablelist', 'simplelist', 'shadowlist', 'lpc_append', 'font_stretch', 'font_weight'],
+    			['repeatableList', 'simpleList', 'shadowList', 'lpcNote', 'fontStretch', 'fontWeight'], $property->animatable['as']);
+    }
   }
 
   // Add manual data
