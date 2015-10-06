@@ -74,10 +74,16 @@
       if (isset($cssData->properties[$matches[2]])) {
         $animatable = 'no';
         if ($matches[1] === 'animatable') {
-          $animatable = isset($matches[3]) ? $matches[3] : 'yes';
-        }
-        if (isset($matches[4])) {
-          $animatable .= $matches[4];
+        	if (isset($matches[3])) {
+        		$animatable = [
+        		  'as' => $matches[3]
+        		];
+        	  if (isset($matches[4])) {
+              $animatable['note'] = $matches[4];
+            }
+        	} else {
+        		$animatable = 'yes';
+        	}
         }
         $cssData->properties[$matches[2]]->animatable = $animatable;
       }
