@@ -55,11 +55,11 @@
       }
     } else if (preg_match('/^\{\{cssinitialdef\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', $line, $matches)) {
       if (isset($cssData->properties[$matches[1]])) {
-      	if (isset($cssData->properties[$matches[1]]->initial) && is_array($cssData->properties[$matches[1]]->initial)) {
+        if (isset($cssData->properties[$matches[1]]->initial) && is_array($cssData->properties[$matches[1]]->initial)) {
           $cssData->properties[$matches[1]]->initial[$language] = '<code>' . $matches[2] . '</code>';
-      	} else {
+        } else {
           $cssData->properties[$matches[1]]->initial = '<code>' . $matches[2] . '</code>';
-      	}
+        }
       }
     } else {
       return false;
@@ -74,16 +74,16 @@
       if (isset($cssData->properties[$matches[2]])) {
         $animatable = 'no';
         if ($matches[1] === 'animatable') {
-        	if (isset($matches[3])) {
-        		$animatable = [
-        		  'as' => $matches[3]
-        		];
-        	  if (isset($matches[4])) {
+          if (isset($matches[3])) {
+            $animatable = [
+              'as' => $matches[3]
+            ];
+            if (isset($matches[4])) {
               $animatable['note'] = $matches[4];
             }
-        	} else {
-        		$animatable = 'yes';
-        	}
+          } else {
+            $animatable = 'yes';
+          }
         }
         $cssData->properties[$matches[2]]->animatable = $animatable;
       }
@@ -136,15 +136,15 @@
     if (preg_match('/^\{\{css((?:no)?percentage)def\("([^\/]+?)"(?:,\s*"(.+)")?\)\}\}$/', $line, $matches)) {
       if (isset($cssData->properties[$matches[2]]) && $matches[1] === 'percentage') {
         if ($cssData->properties[$matches[2]]->percentages === 'no') {
-      		$cssData->properties[$matches[2]]->percentages = [];
+          $cssData->properties[$matches[2]]->percentages = [];
         }
-    	  $cssData->properties[$matches[2]]->percentages[$language] = $matches[3];
+        $cssData->properties[$matches[2]]->percentages[$language] = $matches[3];
       }
     } else if (preg_match('/^\{\{csspercentagestartdef\("([^\/]+?)"\)\}\}(.*?)\{\{csspercentageenddef\}\}$/', $line, $matches)) {
       if (isset($cssData->properties[$matches[1]])) {
-      	if ($cssData->properties[$matches[1]]->percentages === 'no') {
-      		$cssData->properties[$matches[1]]->percentages = [];
-      	}
+        if ($cssData->properties[$matches[1]]->percentages === 'no') {
+          $cssData->properties[$matches[1]]->percentages = [];
+        }
         $cssData->properties[$matches[1]]->percentages[$language] = $matches[2];
       }
     } else {
@@ -336,26 +336,26 @@
         } else if (!$cssDataURLInfo['parserFunction']($cssData, $line, $property, $language)) {
           if (preg_match('/^\{\{css(.+?)startdef\("([^\/]+?)"\)\}\}(.*?)\{\{css\1enddef\}\}$/', $line, $matches)) {
             if (isset($cssData->properties[$matches[2]])) {
-            	if (!isset($cssData->properties[$matches[2]]->{$matches[1]})) {
-            		$cssData->properties[$matches[2]]->{$matches[1]} = [];
-            	}
-            	if ($language === 'en-US' || $matches[3] !== $cssData->properties[$matches[2]]->{$matches[1]}['en-US']) {
+              if (!isset($cssData->properties[$matches[2]]->{$matches[1]})) {
+                $cssData->properties[$matches[2]]->{$matches[1]} = [];
+              }
+              if ($language === 'en-US' || $matches[3] !== $cssData->properties[$matches[2]]->{$matches[1]}['en-US']) {
                 $cssData->properties[$matches[2]]->{$matches[1]}[$language] = $matches[3];
-            	}
+              }
             }
           } else if (preg_match('/^\{\{css(.+?)def\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', $line, $matches)) {
             if (isset($cssData->properties[$matches[2]])) {
-            	if (in_array($matches[1], ['syntax', 'media'])) {
-            		if (!isset($cssData->properties[$matches[2]]->{$matches[1]})) {
-              		$cssData->properties[$matches[2]]->{$matches[1]} = $matches[3];
-            		}
+              if (in_array($matches[1], ['syntax', 'media'])) {
+                if (!isset($cssData->properties[$matches[2]]->{$matches[1]})) {
+                  $cssData->properties[$matches[2]]->{$matches[1]} = $matches[3];
+                }
               } else {
-	            	if (!isset($cssData->properties[$matches[2]]->{$matches[1]})) {
-	            		$cssData->properties[$matches[2]]->{$matches[1]} = [];
-	            	}
-	            	if ($language === 'en-US' || $matches[3] !== $cssData->properties[$matches[2]]->{$matches[1]}['en-US']) {
-	                $cssData->properties[$matches[2]]->{$matches[1]}[$language] = $matches[3];
-	            	}
+                if (!isset($cssData->properties[$matches[2]]->{$matches[1]})) {
+                  $cssData->properties[$matches[2]]->{$matches[1]} = [];
+                }
+                if ($language === 'en-US' || $matches[3] !== $cssData->properties[$matches[2]]->{$matches[1]}['en-US']) {
+                  $cssData->properties[$matches[2]]->{$matches[1]}[$language] = $matches[3];
+                }
               }
             }
           } else if (preg_match('/^\{\{css(.+?)shorthand\("([^\/]+?)",\s*"(.+?)"\)\}\}$/', $line, $matches)) {
@@ -562,8 +562,8 @@
     }
 
     if (isset($property->animatable['as'])) {
-    	$property->animatable['as'] = str_replace(['repeatablelist', 'simplelist', 'shadowlist', 'lpc_append', 'font_stretch', 'font_weight'],
-    			['repeatableList', 'simpleList', 'shadowList', 'lpcNote', 'fontStretch', 'fontWeight'], $property->animatable['as']);
+      $property->animatable['as'] = str_replace(['repeatablelist', 'simplelist', 'shadowlist', 'lpc_append', 'font_stretch', 'font_weight'],
+          ['repeatableList', 'simpleList', 'shadowList', 'lpcNote', 'fontStretch', 'fontWeight'], $property->animatable['as']);
     }
   }
 
@@ -575,10 +575,11 @@
 
   $descriptor = new atRuleDescriptor();
   $descriptor->syntax = 'cyclic | numeric | alphabetic | symbolic | additive | [fixed &lt;integer&gt;?] | [ extends &lt;counter-style-name&gt; ]';
-  $descriptor->initial = 'symbolic';
+  $descriptor->initial = '<code>symbolic</code>';
   $descriptor->percentages = 'no';
   $descriptor->media = 'all';
   $descriptor->computed = 'asSpecified';
+  $descriptor->order = 'uniqueOrder';
   $cssData->atRules['@counter-style']->descriptors['system'] = $descriptor;
 
   $descriptor = new atRuleDescriptor();
@@ -587,6 +588,7 @@
   $descriptor->percentages = 'no';
   $descriptor->media = 'all';
   $descriptor->computed = 'asSpecified';
+  $descriptor->order = 'orderOfAppearance';
   $cssData->atRules['@counter-style']->descriptors['negative'] = $descriptor;
 
   $descriptor = new atRuleDescriptor();
@@ -595,6 +597,7 @@
   $descriptor->percentages = 'no';
   $descriptor->media = 'all';
   $descriptor->computed = 'asSpecified';
+  $descriptor->order = 'uniqueOrder';
   $cssData->atRules['@counter-style']->descriptors['prefix'] = $descriptor;
 
   $descriptor = new atRuleDescriptor();
@@ -603,30 +606,34 @@
   $descriptor->percentages = 'no';
   $descriptor->media = 'all';
   $descriptor->computed = 'asSpecified';
+  $descriptor->order = 'uniqueOrder';
   $cssData->atRules['@counter-style']->descriptors['suffix'] = $descriptor;
 
   $descriptor = new atRuleDescriptor();
   $descriptor->syntax = '[ [ &lt;integer&gt; | infinite ]{2} ]# | auto';
-  $descriptor->initial = 'auto';
+  $descriptor->initial = '<code>auto</code>';
   $descriptor->percentages = 'no';
   $descriptor->media = 'all';
   $descriptor->computed = 'asSpecified';
+  $descriptor->order = 'orderOfAppearance';
   $cssData->atRules['@counter-style']->descriptors['range'] = $descriptor;
 
   $descriptor = new atRuleDescriptor();
   $descriptor->syntax = '&lt;integer&gt; &amp;&amp; &lt;symbol&gt;';
-  $descriptor->initial = '0 ""';
+  $descriptor->initial = '<code>0 ""</code>';
   $descriptor->percentages = 'no';
   $descriptor->media = 'all';
   $descriptor->computed = 'asSpecified';
+  $descriptor->order = 'uniqueOrder';
   $cssData->atRules['@counter-style']->descriptors['pad'] = $descriptor;
 
   $descriptor = new atRuleDescriptor();
   $descriptor->syntax = '&lt;counter-style-name&gt;';
-  $descriptor->initial = 'decimal';
+  $descriptor->initial = '<code>decimal</code>';
   $descriptor->percentages = 'no';
   $descriptor->media = 'all';
   $descriptor->computed = 'asSpecified';
+  $descriptor->order = 'uniqueOrder';
   $cssData->atRules['@counter-style']->descriptors['fallback'] = $descriptor;
 
   $descriptor = new atRuleDescriptor();
@@ -635,6 +642,7 @@
   $descriptor->percentages = 'no';
   $descriptor->media = 'all';
   $descriptor->computed = 'asSpecified';
+  $descriptor->order = 'orderOfAppearance';
   $cssData->atRules['@counter-style']->descriptors['symbols'] = $descriptor;
 
   $descriptor = new atRuleDescriptor();
@@ -643,14 +651,16 @@
   $descriptor->percentages = 'no';
   $descriptor->media = 'all';
   $descriptor->computed = 'asSpecified';
+  $descriptor->order = 'orderOfAppearance';
   $cssData->atRules['@counter-style']->descriptors['additive-symbols'] = $descriptor;
 
   $descriptor = new atRuleDescriptor();
   $descriptor->syntax = 'auto | bullets | numbers | words | spell-out | &lt;counter-style-name&gt;';
-  $descriptor->initial = 'auto';
+  $descriptor->initial = '<code>auto</code>';
   $descriptor->percentages = 'no';
   $descriptor->media = 'all';
   $descriptor->computed = 'asSpecified';
+  $descriptor->order = 'uniqueOrder';
   $cssData->atRules['@counter-style']->descriptors['speak-as'] = $descriptor;
 
   $cssData->atRules['@document'] = new atRule(['CSS Conditional Rules'], ['CSSGroupingRule', 'CSSConditionRule']);
@@ -662,6 +672,7 @@
   $descriptor->percentages = 'no';
   $descriptor->media = 'all';
   $descriptor->computed = 'asSpecified';
+  $descriptor->order = 'uniqueOrder';
   $cssData->atRules['@font-face']->descriptors['font-family'] = $descriptor;
 
   $descriptor = new atRuleDescriptor();
@@ -670,54 +681,61 @@
   $descriptor->percentages = 'no';
   $descriptor->media = 'all';
   $descriptor->computed = 'asSpecified';
+  $descriptor->order = 'orderOfAppearance';
   $cssData->atRules['@font-face']->descriptors['src'] = $descriptor;
 
   $descriptor = new atRuleDescriptor();
   $descriptor->syntax = 'normal | italic | oblique';
-  $descriptor->initial = 'normal';
+  $descriptor->initial = '<code>normal</code>';
   $descriptor->percentages = 'no';
   $descriptor->media = 'all';
   $descriptor->computed = 'asSpecified';
+  $descriptor->order = 'uniqueOrder';
   $cssData->atRules['@font-face']->descriptors['font-style'] = $descriptor;
 
   $descriptor = new atRuleDescriptor();
   $descriptor->syntax = 'normal | bold | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900';
-  $descriptor->initial = 'normal';
+  $descriptor->initial = '<code>normal</code>';
   $descriptor->percentages = 'no';
   $descriptor->media = 'all';
   $descriptor->computed = 'asSpecified';
+  $descriptor->order = 'uniqueOrder';
   $cssData->atRules['@font-face']->descriptors['font-weight'] = $descriptor;
 
   $descriptor = new atRuleDescriptor();
   $descriptor->syntax = 'normal | ultra-condensed | extra-condensed | condensed | semi-condensed | semi-expanded | expanded | extra-expanded | ultra-expanded';
-  $descriptor->initial = 'normal';
+  $descriptor->initial = '<code>normal</code>';
   $descriptor->percentages = 'no';
   $descriptor->media = 'all';
   $descriptor->computed = 'asSpecified';
+  $descriptor->order = 'uniqueOrder';
   $cssData->atRules['@font-face']->descriptors['font-stretch'] = $descriptor;
 
   $descriptor = new atRuleDescriptor();
   $descriptor->syntax = '&lt;unicode-range&gt;#';
-  $descriptor->initial = 'U+0-10FFFF';
+  $descriptor->initial = '<code>U+0-10FFFF</code>';
   $descriptor->percentages = 'no';
   $descriptor->media = 'all';
   $descriptor->computed = 'asSpecified';
+  $descriptor->order = 'orderOfAppearance';
   $cssData->atRules['@font-face']->descriptors['unicode-range'] = $descriptor;
 
   $descriptor = new atRuleDescriptor();
   $descriptor->syntax = 'normal | none | [ &lt;common-lig-values&gt; || &lt;discretionary-lig-values&gt; || &lt;historical-lig-values&gt; || &lt;contextual-alt-values&gt; || stylistic(&lt;feature-value-name&gt;) || historical-forms || styleset(&lt;feature-value-name&gt;#) || character-variant(&lt;feature-value-name&gt;#) || swash(&lt;feature-value-name&gt;) || ornaments(&lt;feature-value-name&gt;) || annotation(&lt;feature-value-name&gt;) || [ small-caps | all-small-caps | petite-caps | all-petite-caps | unicase | titling-caps ] || &lt;numeric-figure-values&gt; || &lt;numeric-spacing-values&gt; || &lt;numeric-fraction-values&gt; || ordinal || slashed-zero || &lt;east-asian-variant-values&gt; || &lt;east-asian-width-values&gt; || ruby ]';
-  $descriptor->initial = 'normal';
+  $descriptor->initial = '<code>normal</code>';
   $descriptor->percentages = 'no';
   $descriptor->media = 'all';
   $descriptor->computed = 'asSpecified';
+  $descriptor->order = 'orderOfAppearance';
   $cssData->atRules['@font-face']->descriptors['font-variant'] = $descriptor;
 
   $descriptor = new atRuleDescriptor();
   $descriptor->syntax = 'normal | &lt;feature-tag-value&gt;#';
-  $descriptor->initial = 'normal';
+  $descriptor->initial = '<code>normal</code>';
   $descriptor->percentages = 'no';
   $descriptor->media = 'all';
   $descriptor->computed = 'asSpecified';
+  $descriptor->order = 'orderOfAppearance';
   $cssData->atRules['@font-face']->descriptors['font-feature-settings'] = $descriptor;
 
   $cssData->atRules['@font-feature-values'] = new atRule(['CSS Fonts'], ['CSSFontFeatureValuesRule']);
@@ -729,18 +747,20 @@
 
   $descriptor = new atRuleDescriptor();
   $descriptor->syntax = 'none | [ crop || cross ]';
-  $descriptor->initial = 'none';
+  $descriptor->initial = '<code>none</code>';
   $descriptor->percentages = 'no';
   $descriptor->media = 'visual, paged';
   $descriptor->computed = 'asSpecified';
+  $descriptor->order = 'orderOfAppearance';
   $cssData->atRules['@page']->descriptors['marks'] = $descriptor;
 
   $descriptor = new atRuleDescriptor();
   $descriptor->syntax = 'auto | &lt;length&gt;';
-  $descriptor->initial = 'auto';
+  $descriptor->initial = '<code>auto</code>';
   $descriptor->percentages = 'no';
   $descriptor->media = 'visual, paged';
   $descriptor->computed = 'asSpecified';
+  $descriptor->order = 'uniqueOrder';
   $cssData->atRules['@page']->descriptors['bleed'] = $descriptor;
 
   $cssData->atRules['@supports'] = new atRule(['CSS Conditional Rules'], ["CSSGroupingRule", "CSSConditionRule", "CSSSupportsRule"]);
@@ -750,18 +770,20 @@
 
   $descriptor = new atRuleDescriptor();
   $descriptor->syntax = '&lt;viewport-length&gt;';
-  $descriptor->initial = 'auto';
+  $descriptor->initial = '<code>auto</code>';
   $descriptor->percentages = 'refer to the width of the initial viewport';
   $descriptor->media = 'visual, continuous';
-  $descriptor->computed = 'auto, an absolute length, or a percentage as specified';
+  $descriptor->computed = 'lengthAbsolutePercentageAsSpecifiedOtherwiseAuto';
+  $descriptor->order = 'uniqueOrder';
   $cssData->atRules['@viewport']->descriptors['min-width'] = $descriptor;
 
   $descriptor = new atRuleDescriptor();
   $descriptor->syntax = '&lt;viewport-length&gt;';
-  $descriptor->initial = 'auto';
+  $descriptor->initial = '<code>auto</code>';
   $descriptor->percentages = 'refer to the width of the initial viewport';
   $descriptor->media = 'visual, continuous';
-  $descriptor->computed = 'auto, an absolute length, or a percentage as specified';
+  $descriptor->computed = 'lengthAbsolutePercentageAsSpecifiedOtherwiseAuto';
+  $descriptor->order = 'uniqueOrder';
   $cssData->atRules['@viewport']->descriptors['max-width'] = $descriptor;
 
   $descriptor = new atRuleDescriptor();
@@ -770,22 +792,25 @@
   $descriptor->percentages = ['min-width', 'max-width'];
   $descriptor->media = 'visual, continuous';
   $descriptor->computed = ['min-width', 'max-width'];
+  $descriptor->order = 'orderOfAppearance';
   $cssData->atRules['@viewport']->descriptors['width'] = $descriptor;
 
   $descriptor = new atRuleDescriptor();
   $descriptor->syntax = '&lt;viewport-length&gt;';
-  $descriptor->initial = 'auto';
+  $descriptor->initial = '<code>auto</code>';
   $descriptor->percentages = 'refer to the height of the initial viewport';
   $descriptor->media = 'visual, continuous';
-  $descriptor->computed = 'auto, an absolute length, or a percentage as specified';
+  $descriptor->computed = 'lengthAbsolutePercentageAsSpecifiedOtherwiseAuto';
+  $descriptor->order = 'uniqueOrder';
   $cssData->atRules['@viewport']->descriptors['min-height'] = $descriptor;
 
   $descriptor = new atRuleDescriptor();
   $descriptor->syntax = '&lt;viewport-length&gt;';
-  $descriptor->initial = 'auto';
+  $descriptor->initial = '<code>auto</code>';
   $descriptor->percentages = 'refer to the height of the initial viewport';
   $descriptor->media = 'visual, continuous';
-  $descriptor->computed = 'auto, an absolute length, or a percentage as specified';
+  $descriptor->computed = 'lengthAbsolutePercentageAsSpecifiedOtherwiseAuto';
+  $descriptor->order = 'uniqueOrder';
   $cssData->atRules['@viewport']->descriptors['max-height'] = $descriptor;
 
   $descriptor = new atRuleDescriptor();
@@ -794,46 +819,52 @@
   $descriptor->percentages = ['min-height', 'max-height'];
   $descriptor->media = 'visual, continuous';
   $descriptor->computed = ['min-height', 'max-height'];
+  $descriptor->order = 'orderOfAppearance';
   $cssData->atRules['@viewport']->descriptors['height'] = $descriptor;
 
   $descriptor = new atRuleDescriptor();
   $descriptor->syntax = 'auto | &lt;number&gt; | &lt;percentage&gt;';
-  $descriptor->initial = 'auto';
+  $descriptor->initial = '<code>auto</code>';
   $descriptor->percentages = 'the zoom factor itself';
   $descriptor->media = 'visual, continuous';
-  $descriptor->computed = 'auto, or a non-negative number or percentage as specified';
+  $descriptor->computed = 'autoNonNegativeOrPercentage';
+  $descriptor->order = 'uniqueOrder';
   $cssData->atRules['@viewport']->descriptors['zoom'] = $descriptor;
 
   $descriptor = new atRuleDescriptor();
   $descriptor->syntax = 'auto | &lt;number&gt; | &lt;percentage&gt;';
-  $descriptor->initial = 'auto';
+  $descriptor->initial = '<code>auto</code>';
   $descriptor->percentages = 'the zoom factor itself';
   $descriptor->media = 'visual, continuous';
-  $descriptor->computed = 'auto, or a non-negative number or percentage as specified';
+  $descriptor->computed = 'autoNonNegativeOrPercentage';
+  $descriptor->order = 'uniqueOrder';
   $cssData->atRules['@viewport']->descriptors['min-zoom'] = $descriptor;
 
   $descriptor = new atRuleDescriptor();
   $descriptor->syntax = 'auto | &lt;number&gt; | &lt;percentage&gt;';
-  $descriptor->initial = 'auto';
+  $descriptor->initial = '<code>auto</code>';
   $descriptor->percentages = 'the zoom factor itself';
   $descriptor->media = 'visual, continuous';
-  $descriptor->computed = 'auto, or a non-negative number or percentage as specified';
+  $descriptor->computed = 'autoNonNegativeOrPercentage';
+  $descriptor->order = 'uniqueOrder';
   $cssData->atRules['@viewport']->descriptors['max-zoom'] = $descriptor;
 
   $descriptor = new atRuleDescriptor();
   $descriptor->syntax = 'zoom | fixed';
-  $descriptor->initial = 'zoom';
-  $descriptor->percentages = 'refer to the size of bounding box';
+  $descriptor->initial = '<code>zoom</code>';
+  $descriptor->percentages = 'referToSizeOfBoundingBox';
   $descriptor->media = 'visual, continuous';
   $descriptor->computed = 'asSpecified';
+  $descriptor->order = 'uniqueOrder';
   $cssData->atRules['@viewport']->descriptors['user-zoom'] = $descriptor;
 
   $descriptor = new atRuleDescriptor();
   $descriptor->syntax = 'auto | portrait | landscape';
-  $descriptor->initial = 'auto';
-  $descriptor->percentages = 'refer to the size of bounding box';
+  $descriptor->initial = '<code>auto</code>';
+  $descriptor->percentages = 'referToSizeOfBoundingBox';
   $descriptor->media = 'visual, continuous';
   $descriptor->computed = 'asSpecified';
+  $descriptor->order = 'uniqueOrder';
   $cssData->atRules['@viewport']->descriptors['orientation'] = $descriptor;
 
   // Selectors
