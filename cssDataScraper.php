@@ -102,7 +102,7 @@
 
     if (preg_match('/^\{\{csscomputedcolordef\("([^\/]+?)"\)\}\}$/', $line, $matches)) {
       if (isset($cssData->properties[$matches[1]])) {
-        $cssData->properties[$matches[1]]->computed = 'color';
+        $cssData->properties[$matches[1]]->computed = '\'color\'';
       }
     } else if (preg_match('/^\{\{csscomputedasspecifieddef\("(.+?)"\)\}\}$/', $line, $matches)) {
       if (isset($cssData->properties[$matches[1]])) {
