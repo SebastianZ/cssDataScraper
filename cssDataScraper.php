@@ -372,7 +372,7 @@
     }
   }
 
-  // Replace common translations by keywords
+  // Replace common translations by keywords and adjust output
   foreach ($cssData->properties as $property) {
     if (isset($property->appliesto['en-US'])) {
       switch ($property->appliesto['en-US']) {
@@ -564,6 +564,24 @@
     if (isset($property->animatable['as'])) {
       $property->animatable['as'] = str_replace(['repeatablelist', 'simplelist', 'shadowlist', 'lpc_append', 'font_stretch', 'font_weight'],
           ['repeatableList', 'simpleList', 'shadowList', 'lpcNote', 'fontStretch', 'fontWeight'], $property->animatable['as']);
+    }
+
+    
+    if (isset($property->alsoAppliesTo)) {
+    	foreach ($property->alsoAppliesTo as $index => $pseudoElement) {
+	      switch ($pseudoElement) {
+	        case 'firstletter':
+	          $property->alsoAppliesTo[$index] = '::first-letter';
+	          break;
+	
+	        case 'firstline':
+	          $property->alsoAppliesTo[$index] = '::first-line';
+	          break;
+	
+	        default:
+	          $property->alsoAppliesTo[$index] = '::' . $pseudoElement;
+	      }
+    	}
     }
   }
 
