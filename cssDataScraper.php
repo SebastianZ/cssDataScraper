@@ -771,7 +771,10 @@
   $descriptor = new atRuleDescriptor();
   $descriptor->syntax = '&lt;viewport-length&gt;';
   $descriptor->initial = '<code>auto</code>';
-  $descriptor->percentages = 'refer to the width of the initial viewport';
+  $descriptor->percentages = [
+    'en-US' => 'refer to the width of the initial viewport',
+    'de' => 'beziehen sich auf die Breite des ursprünglichen Viewports'
+  ];
   $descriptor->media = 'visual, continuous';
   $descriptor->computed = 'lengthAbsolutePercentageAsSpecifiedOtherwiseAuto';
   $descriptor->order = 'uniqueOrder';
@@ -780,7 +783,10 @@
   $descriptor = new atRuleDescriptor();
   $descriptor->syntax = '&lt;viewport-length&gt;';
   $descriptor->initial = '<code>auto</code>';
-  $descriptor->percentages = 'refer to the width of the initial viewport';
+  $descriptor->percentages = [
+    'en-US' => 'refer to the width of the initial viewport',
+    'de' => 'beziehen sich auf die Breite des ursprünglichen Viewports'
+  ];
   $descriptor->media = 'visual, continuous';
   $descriptor->computed = 'lengthAbsolutePercentageAsSpecifiedOtherwiseAuto';
   $descriptor->order = 'uniqueOrder';
@@ -798,7 +804,10 @@
   $descriptor = new atRuleDescriptor();
   $descriptor->syntax = '&lt;viewport-length&gt;';
   $descriptor->initial = '<code>auto</code>';
-  $descriptor->percentages = 'refer to the height of the initial viewport';
+  $descriptor->percentages = [
+    'en-US' => 'refer to the height of the initial viewport',
+    'de' => 'beziehen sich auf die Höhe des ursprünglichen Viewports'
+  ];
   $descriptor->media = 'visual, continuous';
   $descriptor->computed = 'lengthAbsolutePercentageAsSpecifiedOtherwiseAuto';
   $descriptor->order = 'uniqueOrder';
@@ -807,7 +816,10 @@
   $descriptor = new atRuleDescriptor();
   $descriptor->syntax = '&lt;viewport-length&gt;';
   $descriptor->initial = '<code>auto</code>';
-  $descriptor->percentages = 'refer to the height of the initial viewport';
+  $descriptor->percentages = [
+    'en-US' => 'refer to the height of the initial viewport',
+    'de' => 'beziehen sich auf die Höhe des ursprünglichen Viewports'
+  ];
   $descriptor->media = 'visual, continuous';
   $descriptor->computed = 'lengthAbsolutePercentageAsSpecifiedOtherwiseAuto';
   $descriptor->order = 'uniqueOrder';
